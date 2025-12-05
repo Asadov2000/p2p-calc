@@ -1,18 +1,12 @@
 import { CalculationResult } from "../../../shared/types";
 
-/**
- * Основная функция расчета P2P сделки
- * @param fiatOut - Сколько рублей отдали (5000)
- * @param cryptoIn - Сколько USDT получили (65.91)
- * @param wantedProfit - Сколько хотим заработать сверху (100)
- */
 export const calculateP2P = (
   fiatOut: number, 
   cryptoIn: number, 
-  wantedProfit: number = 0
+  wantedProfit: number = 0,
+  commissionPercent: number = 0 // Комиссия в %
 ): CalculationResult => {
   
-  // 1. Если данные не введены или равны 0, возвращаем нули
   if (!fiatOut || !cryptoIn || cryptoIn === 0) {
     return {
       breakEvenRate: 0,
@@ -22,18 +16,21 @@ export const calculateP2P = (
     };
   }
 
-  // 2. Себестоимость (Точка безубыточности)
-  // Курс = Рубли / Крипта
-  const breakEvenRate = fiatOut / cryptoIn;
+  // Эффективный объем крипты (сколько останется после вычета комиссии)
+  // Если комиссия 0.1%, то от 100 USDT останется 99.9 USDT
+  const effectiveCrypto = cryptoIn * (1 - commissionPercent / 100);
 
-  // 3. Целевой сбор (Сколько рублей нам нужно получить в итоге)
+  // 1. Себестоимость (Точка безубыточности)
+  // Чтобы вернуть 5000 руб, продавая 99.9 USDT, курс должен быть выше
+  const breakEvenRate = fiatOut / effectiveCrypto;
+
+  // 2. Целевой сбор
   const totalFiatNeeded = fiatOut + wantedProfit;
 
-  // 4. Целевой курс продажи
-  const targetRate = totalFiatNeeded / cryptoIn;
+  // 3. Целевой курс продажи
+  const targetRate = totalFiatNeeded / effectiveCrypto;
 
-  // 5. Спред (Наценка в процентах)
-  // Формула: ((Продажа - Покупка) / Покупка) * 100
+  // 4. Спред
   const spreadPercent = ((targetRate - breakEvenRate) / breakEvenRate) * 100;
 
   return {
@@ -44,12 +41,8 @@ export const calculateP2P = (
   };
 };
 
-/**
- * Парсер числа из строки.
- * Заменяет запятые на точки и убирает пробелы.
- * "5 000,50" -> 5000.50
- */
 export const parseNumber = (value: string): number => {
+  // Разрешаем запятую и точку, убираем пробелы
   const clean = value.replace(/\s/g, '').replace(',', '.');
   const num = parseFloat(clean);
   return isNaN(num) ? 0 : num;
