@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
 import { calculateP2P, parseNumber } from "../../features/p2p-calculation/lib/math";
 import { Input } from "../../shared/ui/Input/Input";
