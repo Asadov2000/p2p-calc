@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
-import { calculateP2P, parseNumber } from "../../features/p2p-calculation/lib/math";
+import { calculateRate, parseNumber } from "../../features/p2p-calculation/lib/math";
 import { formatCurrency, formatInputNumber, cn } from "../../shared/lib/utils";
 import { translations } from "../../shared/lib/translations";
 import { v4 as uuidv4 } from 'uuid';
 import WebApp from "@twa-dev/sdk";
 import { 
-  Copy, Settings2, Moon, Sun, Info, 
+  Copy, Moon, Sun, Info, 
   MessageCircleQuestion, Check, Eraser, X
 } from "lucide-react";
 
@@ -19,9 +19,9 @@ export const CalculatorForm = () => {
 
   const fiat = parseNumber(store.fiatInput);
   const crypto = parseNumber(store.cryptoInput);
-  const profit = parseNumber(store.profitInput);
-  const commission = parseNumber(store.commissionInput);
-  const result = calculateP2P(fiat, crypto, profit, commission);
+  
+  // ПРОСТОЙ РАСЧЕТ: Сумма / Команда
+  const rate = calculateRate(fiat, crypto);
 
   useEffect(() => {
     if (showHintModal) {
@@ -39,8 +39,8 @@ export const CalculatorForm = () => {
       timestamp: Date.now(),
       fiatAmount: fiat,
       cryptoAmount: crypto,
-      profitTarget: profit,
-      calculatedRate: result.targetRate
+      profitTarget: 0,
+      calculatedRate: rate
     });
   };
 
@@ -66,12 +66,11 @@ export const CalculatorForm = () => {
   return (
     <div className="min-h-screen -m-4 p-5 bg-ios-light-bg dark:bg-ios-dark-bg text-ios-light-text dark:text-ios-dark-text transition-colors duration-300 font-sans selection:bg-ios-blue/20">
       
-      <div className="max-w-md mx-auto flex flex-col gap-5 animate-ios-slide pb-10">
+      <div className="max-w-md mx-auto flex flex-col gap-6 animate-ios-slide pb-10">
         
-        {/* Хедер (Только кнопки, без текста) */}
-        <div className="flex justify-between items-center px-1 pt-2"> {/* pt-2 чтобы было выше */}
+        {/* Хедер */}
+        <div className="flex justify-between items-center px-1 pt-2">
             <div className="flex items-center gap-3 min-h-[40px]">
-                {/* Ластик (Сброс) появляется слева, когда есть данные */}
                 {(store.fiatInput || store.cryptoInput) && (
                     <button 
                         onClick={handleReset}
@@ -106,10 +105,10 @@ export const CalculatorForm = () => {
             </div>
         </div>
 
-        {/* Форма ввода */}
+        {/* Форма ввода (2 поля) */}
         <div className="bg-ios-light-surface dark:bg-ios-dark-surface rounded-[24px] p-5 shadow-ios space-y-4 transition-colors duration-300">
             <IosInput 
-                label={t.give}
+                label={t.give} // "Сумма"
                 value={store.fiatInput}
                 onChange={(val: string) => handleInputChange(store.setFiat, val)}
                 symbol="RUB"
@@ -119,89 +118,44 @@ export const CalculatorForm = () => {
             <div className="h-px bg-gray-100 dark:bg-gray-700 mx-2" />
 
             <IosInput 
-                label={t.get}
+                label={t.get} // "Сумма зачисляемая команде"
                 value={store.cryptoInput}
                 onChange={(val: string) => handleInputChange(store.setCrypto, val)}
                 symbol="USDT"
                 placeholder="0"
             />
-            
-            <div className="h-px bg-gray-100 dark:bg-gray-700 mx-2" />
-
-            <div className="flex gap-3 items-end">
-                <div className="flex-1">
-                    <IosInput 
-                        label={t.profit}
-                        value={store.profitInput}
-                        onChange={(val: string) => handleInputChange(store.setProfit, val)}
-                        symbol="RUB"
-                        placeholder="0"
-                    />
-                </div>
-                
-                <button 
-                    onClick={store.toggleCommission}
-                    className={cn(
-                        "h-12 w-14 rounded-xl flex items-center justify-center transition-all active:scale-95 border mb-[1px]",
-                        store.isCommissionVisible 
-                            ? "bg-ios-blue border-ios-blue text-white shadow-lg shadow-blue-500/30" 
-                            : "bg-gray-100/50 dark:bg-white/5 border-transparent text-gray-400 hover:text-ios-blue"
-                    )}
-                >
-                    <Settings2 size={24} />
-                </button>
-            </div>
-
-            <div className={cn(
-                "transition-all duration-300 overflow-hidden",
-                store.isCommissionVisible ? "max-h-24 opacity-100 pt-2" : "max-h-0 opacity-0"
-            )}>
-                 <IosInput 
-                    label={t.commission}
-                    value={store.commissionInput}
-                    onChange={(val: string) => handleInputChange(store.setCommission, val)}
-                    symbol="%"
-                    placeholder="0"
-                />
-            </div>
         </div>
 
-        {/* Результат */}
+        {/* Результат (Только Курс) */}
         <div className="bg-ios-light-surface dark:bg-ios-dark-surface rounded-[24px] p-6 shadow-ios transition-colors duration-300 relative overflow-hidden">
-             <div className="flex justify-between items-center mb-6">
-                <span className="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-wider">{t.result}</span>
-                {result.spreadPercent > 0 && (
-                    <span className="bg-green-500/10 text-green-600 dark:text-green-400 px-3 py-1 rounded-full text-xs font-bold">
-                        +{result.spreadPercent.toFixed(2)}%
+             
+             <div className="space-y-2 text-center py-2">
+                <span className="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-wider block mb-2">{t.breakEven}</span>
+                
+                <div className="flex items-center justify-center gap-3">
+                    <span className={cn(
+                        "font-bold tracking-tight text-5xl transition-all", 
+                        rate > 0 ? "text-ios-blue" : "text-gray-300 dark:text-gray-700"
+                    )}>
+                        {rate > 0 ? formatCurrency(rate) : "0,00"}
                     </span>
-                )}
-             </div>
-
-             <div className="space-y-6">
-                <ResultRow 
-                    label={t.breakEven} 
-                    value={result.breakEvenRate} 
-                    color="text-ios-red"
-                    id="breakEven"
-                    copiedId={copiedId}
-                    onCopy={() => copyToClipboard(result.breakEvenRate.toFixed(2), "breakEven")}
-                />
-                <div className="h-px bg-gray-100 dark:bg-gray-700" />
-                <ResultRow 
-                    label={t.targetPrice} 
-                    value={result.targetRate} 
-                    color="text-ios-blue"
-                    big
-                    id="target"
-                    copiedId={copiedId}
-                    onCopy={() => copyToClipboard(result.targetRate.toFixed(2), "target")}
-                />
+                    
+                    {/* Кнопка копирования */}
+                    {rate > 0 && (
+                        <button 
+                            onClick={() => copyToClipboard(rate.toFixed(2), "mainResult")}
+                            className="p-3 rounded-2xl bg-ios-blue/10 text-ios-blue hover:bg-ios-blue/20 transition-colors active:scale-90"
+                        >
+                            {copiedId === "mainResult" ? <Check size={24} /> : <Copy size={24} />}
+                        </button>
+                    )}
+                </div>
              </div>
 
              <button 
                 onClick={handleSave}
                 disabled={!fiat || !crypto}
-                className="mt-8 w-full py-4 bg-ios-blue hover:bg-blue-600 active:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none"
+                className="mt-6 w-full py-4 bg-ios-blue hover:bg-blue-600 active:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none"
              >
                 {t.save}
              </button>
@@ -217,7 +171,7 @@ export const CalculatorForm = () => {
 
       </div>
 
-      {/* Модалка */}
+      {/* Модалка с подсказками */}
       {showHintModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
             <div 
@@ -234,7 +188,7 @@ export const CalculatorForm = () => {
                         <X size={20} />
                     </button>
                 </div>
-                <div className="space-y-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                <div className="space-y-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                     <p>{t.hintText}</p>
                 </div>
                 <button 
@@ -251,9 +205,10 @@ export const CalculatorForm = () => {
   );
 };
 
+// Компонент ввода остался тем же, но дублирую для целостности
 const IosInput = ({ label, value, onChange, symbol, placeholder }: any) => (
   <div className="flex flex-col gap-1.5 w-full">
-    <label className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide ml-1">
+    <label className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide ml-1 truncate pr-2">
       {label}
     </label>
     <div className="relative group">
@@ -263,28 +218,11 @@ const IosInput = ({ label, value, onChange, symbol, placeholder }: any) => (
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-12 pl-4 pr-12 rounded-xl bg-gray-100/50 dark:bg-white/5 border border-transparent focus:bg-white dark:focus:bg-black focus:border-ios-blue/50 text-xl font-bold text-gray-900 dark:text-white outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700"
+        className="w-full h-14 pl-4 pr-12 rounded-xl bg-gray-100/50 dark:bg-white/5 border border-transparent focus:bg-white dark:focus:bg-black focus:border-ios-blue/50 text-2xl font-bold text-gray-900 dark:text-white outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700"
       />
       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm select-none">
         {symbol}
       </span>
-    </div>
-  </div>
-);
-
-const ResultRow = ({ label, value, color, big, onCopy, id, copiedId }: any) => (
-  <div className="flex justify-between items-end">
-    <span className="text-gray-500 dark:text-gray-400 text-sm mb-1 font-medium">{label}</span>
-    <div className="flex items-center gap-3">
-      <span className={cn("font-bold tracking-tight", color, big ? "text-3xl" : "text-xl")}>
-        {formatCurrency(value)}
-      </span>
-      <button 
-        onClick={onCopy}
-        className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 text-gray-500 dark:text-gray-300 transition-colors active:scale-90"
-      >
-        {copiedId === id ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-      </button>
     </div>
   </div>
 );
