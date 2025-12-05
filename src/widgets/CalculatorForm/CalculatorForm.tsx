@@ -19,8 +19,6 @@ export const CalculatorForm = () => {
 
   const fiat = parseNumber(store.fiatInput);
   const crypto = parseNumber(store.cryptoInput);
-  
-  // ПРОСТОЙ РАСЧЕТ: Сумма / Команда
   const rate = calculateRate(fiat, crypto);
 
   useEffect(() => {
@@ -64,12 +62,11 @@ export const CalculatorForm = () => {
   };
 
   return (
-    <div className="min-h-screen -m-4 p-5 bg-ios-light-bg dark:bg-ios-dark-bg text-ios-light-text dark:text-ios-dark-text transition-colors duration-300 font-sans selection:bg-ios-blue/20">
-      
-      <div className="max-w-md mx-auto flex flex-col gap-6 animate-ios-slide pb-10">
+    // Убрали внешний div с min-h-screen и padding, теперь это просто фрагмент
+    <div className="flex flex-col gap-6">
         
         {/* Хедер */}
-        <div className="flex justify-between items-center px-1 pt-2">
+        <div className="flex justify-between items-center px-1">
             <div className="flex items-center gap-3 min-h-[40px]">
                 {(store.fiatInput || store.cryptoInput) && (
                     <button 
@@ -105,10 +102,10 @@ export const CalculatorForm = () => {
             </div>
         </div>
 
-        {/* Форма ввода (2 поля) */}
+        {/* Форма ввода */}
         <div className="bg-ios-light-surface dark:bg-ios-dark-surface rounded-[24px] p-5 shadow-ios space-y-4 transition-colors duration-300">
             <IosInput 
-                label={t.give} // "Сумма"
+                label={t.give}
                 value={store.fiatInput}
                 onChange={(val: string) => handleInputChange(store.setFiat, val)}
                 symbol="RUB"
@@ -118,7 +115,7 @@ export const CalculatorForm = () => {
             <div className="h-px bg-gray-100 dark:bg-gray-700 mx-2" />
 
             <IosInput 
-                label={t.get} // "Сумма зачисляемая команде"
+                label={t.get}
                 value={store.cryptoInput}
                 onChange={(val: string) => handleInputChange(store.setCrypto, val)}
                 symbol="USDT"
@@ -126,7 +123,7 @@ export const CalculatorForm = () => {
             />
         </div>
 
-        {/* Результат (Только Курс) */}
+        {/* Результат */}
         <div className="bg-ios-light-surface dark:bg-ios-dark-surface rounded-[24px] p-6 shadow-ios transition-colors duration-300 relative overflow-hidden">
              
              <div className="space-y-2 text-center py-2">
@@ -140,7 +137,6 @@ export const CalculatorForm = () => {
                         {rate > 0 ? formatCurrency(rate) : "0,00"}
                     </span>
                     
-                    {/* Кнопка копирования */}
                     {rate > 0 && (
                         <button 
                             onClick={() => copyToClipboard(rate.toFixed(2), "mainResult")}
@@ -163,15 +159,13 @@ export const CalculatorForm = () => {
 
         <button 
             onClick={openSupport}
-            className="flex items-center justify-center gap-2 text-gray-400 hover:text-ios-blue transition-colors py-4 text-xs font-medium"
+            className="flex items-center justify-center gap-2 text-gray-400 hover:text-ios-blue transition-colors py-2 text-xs font-medium"
         >
             <MessageCircleQuestion size={16} />
             {t.support}
         </button>
 
-      </div>
-
-      {/* Модалка с подсказками */}
+      {/* Модалка */}
       {showHintModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
             <div 
@@ -200,12 +194,10 @@ export const CalculatorForm = () => {
             </div>
         </div>
       )}
-
     </div>
   );
 };
 
-// Компонент ввода остался тем же, но дублирую для целостности
 const IosInput = ({ label, value, onChange, symbol, placeholder }: any) => (
   <div className="flex flex-col gap-1.5 w-full">
     <label className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide ml-1 truncate pr-2">
