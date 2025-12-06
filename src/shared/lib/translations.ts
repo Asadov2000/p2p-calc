@@ -2,19 +2,19 @@ export const translations = {
   ru: {
     title: "P2P Калькулятор",
     subtitle: "Считай спред профессионально",
-    give: "Сумма", // Новое название
-    get: "Сумма зачисляемая команде", // Новое название
-    profit: "Хочу заработать", 
+    give: "Сумма",
+    get: "Сумма зачисляемая команде",
+    profit: "Хочу заработать",
     commission: "Комиссия биржи",
     result: "Результат",
-    breakEven: "Курс", // Просто "Курс", так как он один
+    breakEven: "Себестоимость", // Было "Курс", стало "Себестоимость"
     targetPrice: "Курс продажи",
     save: "Сохранить расчет",
     support: "Написать в поддержку",
     settings: "Настройки",
     hints: "Подсказки",
     hintTitle: "Как это работает?",
-    hintText: "🟢 Введите общую Сумму (в рублях) и Сумму, которая придет команде (в USDT).\n\nКалькулятор покажет реальный курс обмена.",
+    hintText: "🟢 Введите общую Сумму (в рублях) и Сумму, которая придет команде (в USDT).\n\nКалькулятор покажет реальный курс обмена (себестоимость).",
     history: "История",
     clear: "Очистить"
   },
@@ -26,14 +26,14 @@ export const translations = {
     profit: "Desired Profit",
     commission: "Exchange Fee",
     result: "Result",
-    breakEven: "Rate",
+    breakEven: "Break-even",
     targetPrice: "Selling Price",
     save: "Save Calculation",
     support: "Contact Support",
     settings: "Settings",
     hints: "Hints",
     hintTitle: "How it works?",
-    hintText: "🟢 Enter the Total Amount and the Amount credited to the team.\n\nThe calculator will show the actual exchange rate.",
+    hintText: "🟢 Enter the Total Amount and the Amount credited to the team.\n\nThe calculator will show the break-even exchange rate.",
     history: "History",
     clear: "Clear"
   }
