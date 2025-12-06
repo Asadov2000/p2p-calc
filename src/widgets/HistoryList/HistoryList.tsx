@@ -1,5 +1,5 @@
 import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
-import { formatCurrency, cn } from "../../shared/lib/utils";
+import { formatCurrency } from "../../shared/lib/utils";
 import { translations } from "../../shared/lib/translations";
 import { Trash2 } from "lucide-react";
 import WebApp from "@twa-dev/sdk";

@@ -3,7 +3,7 @@ export const translations = {
     title: "P2P Калькулятор",
     give: "Сумма (RUB)",
     get: "Получу (USDT)",
-    sellPrice: "Курс продажи (P2P)", // Новое поле
+    sellPrice: "Курс продажи на ByBit", // Новое поле
     breakEven: "Себестоимость",
     profit: "Твой заработок", // Результат
     save: "Сохранить",
@@ -18,7 +18,7 @@ export const translations = {
     title: "P2P Calculator",
     give: "Amount (RUB)",
     get: "Receive (USDT)",
-    sellPrice: "Sell Price (P2P)",
+    sellPrice: "The selling rate on ByBit",
     breakEven: "Break-even",
     profit: "Your Profit",
     save: "Save",

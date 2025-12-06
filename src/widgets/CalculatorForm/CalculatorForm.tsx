@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import WebApp from "@twa-dev/sdk";
 import { 
   Copy, Moon, Sun, Info, 
-  MessageCircleQuestion, Check, Eraser, X, TrendingUp
+  MessageCircleQuestion, Check, Eraser, X
 } from "lucide-react";
 
 export const CalculatorForm = () => {
