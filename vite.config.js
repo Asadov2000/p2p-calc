@@ -5,6 +5,14 @@ export default defineConfig({
     plugins: [react()],
     server: {
         port: 5173,
-        host: true // Чтобы можно было открыть с телефона в одной Wi-Fi сети
+        host: true, // Чтобы можно было открыть с телефона в одной Wi-Fi сети
+        headers: {
+            // Правильные MIME типы для Service Worker
+            'Service-Worker-Allowed': '/',
+        }
+    },
+    build: {
+        // Убедимся, что public файлы копируются
+        assetsDir: 'assets',
     }
 });

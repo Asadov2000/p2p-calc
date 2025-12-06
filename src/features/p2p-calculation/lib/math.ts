@@ -14,5 +14,7 @@ export const parseNumber = (value: string): number => {
  */
 export const calculateRate = (fiat: number, crypto: number): number => {
   if (!fiat || !crypto || crypto === 0) return 0;
-  return fiat / crypto;
+  const rate = fiat / crypto;
+  // Защита от Infinity и NaN на случай неверных вычислений
+  return isFinite(rate) ? rate : 0;
 };

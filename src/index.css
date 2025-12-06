@@ -22,6 +22,11 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 
+  /* Используем dynamic viewport height для корректной работы на мобилях */
+  /* Fallback на vh для старых браузеров */
+  min-height: 100vh;
+  min-height: 100dvh;
+
   /* Убираем "резиновый" скролл (bounce) на iOS */
   overscroll-behavior-y: none;
   

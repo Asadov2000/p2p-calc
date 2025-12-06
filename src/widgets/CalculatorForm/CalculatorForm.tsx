@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
 import { calculateRate, parseNumber } from "../../features/p2p-calculation/lib/math";
-import { formatCurrency, formatInputNumber, cn } from "../../shared/lib/utils";
+import { formatCurrency, formatInputNumber, cn, copyToClipboard } from "../../shared/lib/utils";
 import { translations } from "../../shared/lib/translations";
 import { v4 as uuidv4 } from 'uuid';
 import WebApp from "@twa-dev/sdk";
@@ -10,6 +10,29 @@ import {
   MessageCircleQuestion, Check, Eraser, X, XCircle,
   TrendingUp, Wallet, ArrowRightLeft
 } from "lucide-react";
+
+// Безопасные вызовы Haptic Feedback
+const safeHaptic = {
+  impactOccurred: (style: 'light' | 'medium' | 'heavy' = 'medium') => {
+    try { WebApp?.HapticFeedback?.impactOccurred?.(style); } catch (e) { console.debug('Haptic not available'); }
+  },
+  notificationOccurred: (type: 'success' | 'error' | 'warning' = 'success') => {
+    try { WebApp?.HapticFeedback?.notificationOccurred?.(type); } catch (e) { console.debug('Haptic not available'); }
+  },
+  selectionChanged: () => {
+    try { WebApp?.HapticFeedback?.selectionChanged?.(); } catch (e) { console.debug('Haptic not available'); }
+  }
+};
+
+// Безопасный WebApp
+const safeWebApp = {
+  showAlert: (text: string) => {
+    try { WebApp?.showAlert?.(text); } catch (e) { alert(text); }
+  },
+  openTelegramLink: (url: string) => {
+    try { WebApp?.openTelegramLink?.(url); } catch (e) { window.open(url, '_blank'); }
+  }
+};
 
 interface IosInputProps {
   label: string;
@@ -58,7 +81,7 @@ export const CalculatorForm = () => {
 
   const handleSave = useCallback(() => {
     if (!fiat || !crypto) return;
-    WebApp.HapticFeedback.impactOccurred('medium');
+    safeHaptic.impactOccurred('medium');
     
     const historyItem = {
       id: uuidv4(),
@@ -71,32 +94,32 @@ export const CalculatorForm = () => {
     };
 
     store.addToHistory(historyItem);
-    WebApp.showAlert(`Сохранено! Профит: ${formatCurrency(estimatedProfit)} ₽`);
+    safeWebApp.showAlert(`Сохранено! Профит: ${formatCurrency(estimatedProfit)} ₽`);
     
   }, [fiat, crypto, estimatedProfit, breakEven, sellRate, store]);
 
   const handleReset = useCallback(() => {
-    WebApp.HapticFeedback.impactOccurred('light');
+    safeHaptic.impactOccurred('light');
     store.resetCalculator();
     setSellPrice("");
   }, [store]);
 
-  const copyToClipboard = useCallback((text: string, id: string) => {
+  const handleCopyToClipboard = useCallback((text: string, id: string) => {
     if (!text || text === '0,00') return;
-    navigator.clipboard.writeText(text);
-    WebApp.HapticFeedback.notificationOccurred('success');
+    copyToClipboard(text);
+    safeHaptic.notificationOccurred('success');
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 1500);
   }, []);
 
-  const openSupport = () => WebApp.openTelegramLink('https://t.me/Asadov_p2p');
+  const openSupport = () => safeWebApp.openTelegramLink('https://t.me/Asadov_p2p');
 
   const handleInputChange = useCallback((setter: (val: string) => void, value: string) => {
     setter(formatInputNumber(value));
   }, []);
 
   const handleQuickAmount = (amount: string) => {
-    WebApp.HapticFeedback.selectionChanged();
+    safeHaptic.selectionChanged();
     store.setFiat(amount);
   };
 
@@ -112,6 +135,7 @@ export const CalculatorForm = () => {
                     <button 
                         onClick={handleReset}
                         className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] flex items-center justify-center text-gray-500 hover:text-red-500 shadow-sm transition-all active:scale-90"
+                        title="Очистить все"
                     >
                         <Eraser size={20} />
                     </button>
@@ -119,9 +143,9 @@ export const CalculatorForm = () => {
             </div>
             
             <div className="flex gap-3">
-                 <button onClick={() => setShowHintModal(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center text-blue-500 active:scale-90 transition-transform"><Info size={22} /></button>
-                 <button onClick={store.toggleTheme} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center text-amber-500 dark:text-yellow-400 active:scale-90 transition-transform">{store.theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}</button>
-                 <button onClick={() => store.setLanguage(store.language === 'ru' ? 'en' : 'ru')} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center font-bold text-xs active:scale-90 transition-transform text-gray-600 dark:text-gray-300">{store.language.toUpperCase()}</button>
+                 <button onClick={() => setShowHintModal(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center text-blue-500 active:scale-90 transition-transform" title="Подсказки"><Info size={22} /></button>
+                 <button onClick={store.toggleTheme} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center text-amber-500 dark:text-yellow-400 active:scale-90 transition-transform" title="Переключить тему">{store.theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}</button>
+                 <button onClick={() => store.setLanguage(store.language === 'ru' ? 'en' : 'ru')} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center font-bold text-xs active:scale-90 transition-transform text-gray-600 dark:text-gray-300" title="Смена языка">{store.language.toUpperCase()}</button>
             </div>
         </div>
 
@@ -179,8 +203,9 @@ export const CalculatorForm = () => {
                  </div>
                  {breakEven > 0 && (
                     <button 
-                        onClick={() => copyToClipboard(breakEven.toFixed(2), "breakEven")}
+                        onClick={() => handleCopyToClipboard(breakEven.toFixed(2), "breakEven")}
                         className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/10 text-gray-400 dark:text-gray-300 flex items-center justify-center active:scale-90 transition-all hover:text-blue-500"
+                        title="Копировать курс"
                     >
                         {copiedId === "breakEven" ? <Check size={22} className="text-green-500" /> : <Copy size={22} />}
                     </button>
@@ -252,7 +277,7 @@ export const CalculatorForm = () => {
             <div className="relative bg-white dark:bg-[#1C1C1E] w-full max-w-sm rounded-[36px] p-8 shadow-2xl animate-ios-slide max-h-[85vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h3 className="text-2xl font-bold dark:text-white">{t.hints}</h3>
-                    <button onClick={() => setShowHintModal(false)} className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white hover:bg-gray-200 transition-colors"><X size={20} /></button>
+                    <button onClick={() => setShowHintModal(false)} className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white hover:bg-gray-200 transition-colors" title="Закрыть"><X size={20} /></button>
                 </div>
                 <div className="space-y-8 relative">
                     <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gray-100 dark:bg-white/5 -z-10" />
@@ -320,7 +345,7 @@ const IosInput = ({ label, value, onChange, symbol, placeholder, transparent, on
       />
       <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center pr-4 gap-3">
          {value && onClear && !transparent && (
-             <button onClick={onClear} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+             <button onClick={onClear} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Очистить">
                <XCircle size={18} fill="currentColor" className="opacity-40" />
              </button>
          )}
