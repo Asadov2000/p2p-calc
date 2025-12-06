@@ -5,38 +5,33 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatCurrency = (val: number, currency: string = '') => {
-  const formatted = new Intl.NumberFormat('ru-RU', {
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('ru-RU', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(val);
-  
-  return currency ? `${formatted} ${currency}` : formatted;
-};
+  }).format(amount);
+}
 
-// НОВАЯ ФУНКЦИЯ: Делает "1 000 000" при вводе
-export const formatInputNumber = (value: string) => {
-  if (!value) return '';
+// Вот эта функция, которой не хватало!
+export function formatTime(timestamp: number): string {
+  return new Intl.DateTimeFormat('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(timestamp));
+}
+
+export function formatInputNumber(value: string): string {
+  // Разрешаем только цифры и одну запятую/точку
+  let cleanValue = value.replace(/[^\d.,]/g, '');
   
-  // 1. Оставляем только цифры и точку (заменяем запятую на точку)
-  let val = value.replace(/,/g, '.').replace(/[^\d.]/g, '');
+  // Заменяем запятую на точку для унификации
+  cleanValue = cleanValue.replace(',', '.');
   
-  // 2. Защита от лишних точек (1.2.3 -> 1.23)
-  const parts = val.split('.');
-  
-  // 3. Форматируем целую часть (добавляем пробелы)
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  
-  // 4. Собираем обратно
-  // Если есть дробная часть, обрезаем её до 8 знаков (чтобы не было 0.0000000001)
-  if (parts.length > 1) {
-    return `${parts[0]}.${parts[1].slice(0, 8)}`;
+  // Запрещаем вторую точку
+  const parts = cleanValue.split('.');
+  if (parts.length > 2) {
+    cleanValue = parts[0] + '.' + parts.slice(1).join('');
   }
   
-  // Если пользователь поставил точку в конце ("123."), возвращаем с точкой
-  if (val.endsWith('.')) {
-    return `${parts[0]}.`;
-  }
-
-  return parts[0];
-};
+  return cleanValue;
+}

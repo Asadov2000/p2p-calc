@@ -245,7 +245,7 @@ export const CalculatorForm = () => {
 
       </div>
 
-      {/* Модалка с подсказками (Обновлен текст шагов) */}
+      {/* Модалка с подсказками */}
       {showHintModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-6 sm:pb-0">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setShowHintModal(false)} />
@@ -258,25 +258,25 @@ export const CalculatorForm = () => {
                     <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-gray-100 dark:bg-white/5 -z-10" />
                     <StepItem 
                         icon={<Wallet size={20} />} 
-                        title="Шаг 1. Бюджет" 
-                        text="В поле СУММА напиши сумму в рублях, которую ты потратил на покупку."
+                        title={t.step1Title} 
+                        text={t.step1Text}
                         color="text-blue-500" bg="bg-blue-50 dark:bg-blue-500/20"
                     />
                     <StepItem 
                         icon={<ArrowRightLeft size={20} />} 
-                        title="Шаг 2. Объем" 
-                        text="В поле ПОЛУЧУ напиши, сколько USDT пришло тебе на кошелек."
+                        title={t.step2Title} 
+                        text={t.step2Text}
                         color="text-indigo-500" bg="bg-indigo-50 dark:bg-indigo-500/20"
                     />
                     <StepItem 
                         icon={<TrendingUp size={20} />} 
-                        title="Шаг 3. Прибыль" 
-                        text="Ниже введи Курс продажи. Мы покажем твой чистый заработок!"
+                        title={t.step3Title} 
+                        text={t.step3Text}
                         color="text-green-500" bg="bg-green-50 dark:bg-green-500/20"
                     />
                 </div>
                 <button onClick={() => setShowHintModal(false)} className="mt-8 w-full py-4 bg-[#007AFF] text-white rounded-[20px] font-bold text-[17px] active:scale-[0.98] transition-transform">
-                    Понятно
+                    {t.gotIt}
                 </button>
             </div>
         </div>

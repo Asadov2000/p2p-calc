@@ -1,32 +1,48 @@
 export const translations = {
   ru: {
     title: "P2P Калькулятор",
-    give: "Сумма (RUB)",
-    get: "Получу (USDT)",
-    sellPrice: "Курс продажи на ByBit", // Новое поле
+    give: "СУММА",
+    get: "СУММА ЗАЧИСЛЯЕМАЯ КОМАНДЕ",
+    sellPrice: "Курс продажи",
     breakEven: "Себестоимость",
-    profit: "Твой заработок", // Результат
+    profit: "Твой заработок",
     save: "Сохранить",
     support: "Поддержка",
     hints: "Подсказки",
-    hintTitle: "Как считать?",
-    hintText: "1. Введите, сколько рублей вы отдали и сколько USDT получили.\n2. В поле 'Курс продажи' введите цену, по которой планируете выставить ордер на Bybit.\n3. Внизу увидите чистую прибыль.",
+    // Новые ключи для шагов
+    step1Title: "Шаг 1. Бюджет",
+    step1Text: "В поле СУММА напиши сумму в рублях, которую ты потратил на покупку.",
+    step2Title: "Шаг 2. Объем",
+    step2Text: "В поле СУММА ЗАЧИСЛЯЕМАЯ КОМАНДЕ напиши, сколько USDT пришло тебе на кошелек.",
+    step3Title: "Шаг 3. Прибыль",
+    step3Text: "Ниже введи Курс продажи. Мы покажем твой чистый заработок!",
+    gotIt: "Понятно",
+    
     history: "История",
+    historyEmpty: "История пуста",
     clear: "Очистить"
   },
   en: {
     title: "P2P Calculator",
-    give: "Amount (RUB)",
-    get: "Receive (USDT)",
-    sellPrice: "The selling rate on ByBit",
+    give: "AMOUNT",
+    get: "RECEIVE",
+    sellPrice: "Selling Rate",
     breakEven: "Break-even",
     profit: "Your Profit",
     save: "Save",
     support: "Support",
     hints: "Hints",
-    hintTitle: "How to use?",
-    hintText: "1. Enter Amount sent and USDT received.\n2. Enter the 'Sell Price' you see on Bybit.\n3. See your net profit below.",
+    // Новые ключи для шагов (English)
+    step1Title: "Step 1. Budget",
+    step1Text: "Enter the amount in RUB you spent in the AMOUNT field.",
+    step2Title: "Step 2. Volume",
+    step2Text: "Enter how much USDT you received in the THE AMOUNT CREDITED TO THE TEAM field.",
+    step3Title: "Step 3. Profit",
+    step3Text: "Enter the Selling Rate below. We will calculate your net profit!",
+    gotIt: "Got it",
+
     history: "History",
+    historyEmpty: "History is empty",
     clear: "Clear"
   }
 };

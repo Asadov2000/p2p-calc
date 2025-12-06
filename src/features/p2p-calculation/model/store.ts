@@ -1,71 +1,70 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { HistoryItem } from '../../../shared/types';
 import { Language, Theme } from '../../../shared/lib/translations';
+
+// Обновляем интерфейс записи в истории
+export interface HistoryItem {
+  id: string;
+  timestamp: number;
+  fiatAmount: number;
+  cryptoAmount: number;
+  calculatedRate: number;
+  // Добавляем новые поля (необязательные, чтобы старые записи не сломались)
+  profitTarget?: number;
+  sellPrice?: number;
+}
 
 interface CalculatorState {
   fiatInput: string;
   cryptoInput: string;
-  profitInput: string;
-  commissionInput: string;
-  
-  isCommissionVisible: boolean;
+  history: HistoryItem[];
   language: Language;
   theme: Theme;
-
-  setFiat: (val: string) => void;
-  setCrypto: (val: string) => void;
-  setProfit: (val: string) => void;
-  setCommission: (val: string) => void;
-  toggleCommission: () => void;
+  
+  setFiat: (value: string) => void;
+  setCrypto: (value: string) => void;
+  addToHistory: (item: HistoryItem) => void;
+  clearHistory: () => void; // Добавили метод очистки
+  resetCalculator: () => void;
   setLanguage: (lang: Language) => void;
   toggleTheme: () => void;
-  resetCalculator: () => void;
-
-  history: HistoryItem[];
-  addToHistory: (item: HistoryItem) => void;
-  clearHistory: () => void;
 }
 
 export const useCalculatorStore = create<CalculatorState>()(
   persist(
     (set) => ({
-      // 1. Очистили строки (были '5000' и т.д.)
-      fiatInput: '',
-      cryptoInput: '',
-      profitInput: '',
-      commissionInput: '', 
-      
-      isCommissionVisible: false,
+      fiatInput: "",
+      cryptoInput: "",
+      history: [],
       language: 'ru',
       theme: 'light',
-      history: [],
 
-      setFiat: (val) => set({ fiatInput: val }),
-      setCrypto: (val) => set({ cryptoInput: val }),
-      setProfit: (val) => set({ profitInput: val }),
-      setCommission: (val) => set({ commissionInput: val }),
-      toggleCommission: () => set((state) => ({ isCommissionVisible: !state.isCommissionVisible })),
+      setFiat: (value) => set({ fiatInput: value }),
+      setCrypto: (value) => set({ cryptoInput: value }),
+      
+      addToHistory: (item) => set((state) => ({ 
+        history: [item, ...state.history].slice(0, 50) // Храним последние 50 записей
+      })),
+
+      clearHistory: () => set({ history: [] }), // Реализация очистки
+
+      resetCalculator: () => set({ fiatInput: "", cryptoInput: "" }),
       
       setLanguage: (lang) => set({ language: lang }),
-      toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
-
-      resetCalculator: () => set({
-        fiatInput: '',
-        cryptoInput: '',
-        profitInput: '',
-        commissionInput: '',
-        isCommissionVisible: false
-      }),
-
-      addToHistory: (item) => set((state) => ({
-        history: [item, ...state.history].slice(0, 20)
-      })),
       
-      clearHistory: () => set({ history: [] }),
+      toggleTheme: () => set((state) => {
+        const newTheme = state.theme === 'light' ? 'dark' : 'light';
+        // Меняем класс на html теге для Tailwind
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        return { theme: newTheme };
+      }),
     }),
     {
-      name: 'p2p-calculator-v3-clean', // Новое имя хранилища для сброса старых данных
+      name: 'p2p-calculator-storage',
     }
   )
 );
