@@ -1,37 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Учитываем безопасные зоны iPhone (челка и низ) */
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
 
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  /* Плавный переход всей темы */
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Делаем шрифт четким и "дорогим" */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  /* Убираем "резиновый" скролл (bounce) на iOS */
+  overscroll-behavior-y: none;
+  
+  /* Плавная смена темы */
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Принудительный фон для Apple-эффекта */
+/* Цвет выделения текста (вместо стандартного синего) */
+::selection {
+  background-color: rgba(0, 122, 255, 0.2); /* iOS Blue с прозрачностью */
+  color: inherit;
+}
+
+/* Светлая тема */
+body {
+  background-color: #F2F2F7;
+  color: #000000;
+}
+
+/* Темная тема (Глубокий черный для OLED экранов) */
 html.dark body {
   background-color: #000000;
   color: #FFFFFF;
 }
 
-html body {
-  background-color: #F2F2F7;
-  color: #000000;
+/* Убираем скроллбар (визуально), но скролл остается */
+::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
-
-/* Убираем подсветку при тапе на мобильных */
 * {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+  
+  /* Убираем подсветку тапа на мобильных */
   -webkit-tap-highlight-color: transparent;
+  
+  /* Запрещаем выделять текст интерфейса (кнопки, лейблы), кроме инпутов */
+  user-select: none;
 }
 
+/* Разрешаем выделять текст и писать в инпутах */
+input, textarea {
+  user-select: text;
+  /* Убираем стандартные стили iOS для инпутов */
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+/* Хак, чтобы убрать уродливый фон автозаполнения Chrome/Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #F2F2F7 inset !important;
+    -webkit-text-fill-color: #000 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover, 
+html.dark input:-webkit-autofill:focus, 
+html.dark input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #1C1C1E inset !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+/* Улучшенная анимация появления */
 .animate-ios-slide {
-  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: iosSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes iosSlideUp {
+  0% { 
+    opacity: 0; 
+    transform: translateY(15px) scale(0.96); 
+    filter: blur(4px); /* Эффект расфокуса при появлении */
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+    filter: blur(0);
+  }
+}
+
+/* Утилита для скрытия скролла горизонтального (для кнопок быстрых сумм) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
