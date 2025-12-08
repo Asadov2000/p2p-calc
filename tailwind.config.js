@@ -33,7 +33,20 @@ export default {
         sans: ['-apple-system', 'BlinkMacSystemFont', 'San Francisco', 'Helvetica Neue', 'sans-serif'],
       },
       boxShadow: {
-        'ios': '0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)', // Очень мягкая тень
+        'ios': '0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
+        'card': '0 8px 24px rgba(0, 0, 0, 0.08)',
+        'card-dark': '0 8px 24px rgba(0, 0, 0, 0.4)',
+        'button': '0 4px 12px rgba(0, 122, 255, 0.3)',
+      },
+      animation: {
+        'pulse-glow': 'pulse-glow 2s infinite',
+        'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'spin-smooth': 'spin-smooth 1.5s linear infinite',
+        'bounce-in': 'bounce-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'shimmer': 'shimmer 2s infinite',
+        'fade-in': 'fadeIn 0.3s ease-in-out',
+        'shake': 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)',
+        'scale-up': 'scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
       }
     },
   },

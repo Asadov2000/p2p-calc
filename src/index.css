@@ -120,3 +120,146 @@ html.dark input:-webkit-autofill:active{
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* 🎨 Улучшенные анимации и микровзаимодействия */
+
+/* Пульсирующий эффект для важных элементов */
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7);
+  }
+  50% { 
+    box-shadow: 0 0 0 12px rgba(0, 122, 255, 0);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Плавный слайд справа */
+@keyframes slideInRight {
+  from { 
+    opacity: 0; 
+    transform: translateX(20px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Вращение загрузки */
+@keyframes spin-smooth {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-smooth {
+  animation: spin-smooth 1.5s linear infinite;
+}
+
+/* Bounce эффект на нажатие */
+@keyframes bounce-in {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Shimmer (блеск) для скелетонов */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+}
+
+/* Плавное появление с opacity */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+/* Шейк эффект для ошибок */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Плавное изменение размера */
+@keyframes scaleUp {
+  from { 
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Улучшенный переход для кнопок */
+button {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:active {
+  animation: bounce-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Улучшенный переход для input */
+input:focus {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Глубокая тень при наведении */
+.hover\:shadow-deep:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Классы для задержки анимации статистики */
+.stat-card-delay-1 {
+  animation-delay: 0.05s;
+}
+
+.stat-card-delay-2 {
+  animation-delay: 0.1s;
+}
+
+.stat-card-delay-3 {
+  animation-delay: 0.15s;
+}
+
+/* Классы для задержки анимации истории */
+.history-item-delay-0 { animation-delay: 0s; }
+.history-item-delay-1 { animation-delay: 0.02s; }
+.history-item-delay-2 { animation-delay: 0.04s; }
+.history-item-delay-3 { animation-delay: 0.06s; }
+.history-item-delay-4 { animation-delay: 0.08s; }
+.history-item-delay-5 { animation-delay: 0.1s; }

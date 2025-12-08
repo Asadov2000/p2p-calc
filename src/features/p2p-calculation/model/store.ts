@@ -24,6 +24,7 @@ interface CalculatorState {
   setFiat: (value: string) => void;
   setCrypto: (value: string) => void;
   addToHistory: (item: HistoryItem) => void;
+  setHistory: (items: HistoryItem[]) => void;
   clearHistory: () => void; // Добавили метод очистки
   resetCalculator: () => void;
   setLanguage: (lang: Language) => void;
@@ -45,6 +46,8 @@ export const useCalculatorStore = create<CalculatorState>()(
       addToHistory: (item) => set((state) => ({ 
         history: [item, ...state.history].slice(0, 50) // Храним последние 50 записей
       })),
+
+      setHistory: (items) => set({ history: items }),
 
       clearHistory: () => set({ history: [] }), // Реализация очистки
 
