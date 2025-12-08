@@ -44,8 +44,29 @@ export const translations = {
     history: "History",
     historyEmpty: "History is empty",
     clear: "Clear"
+  },
+  tj: {
+    title: "P2P Ҳисобкунак",
+    give: "Маблағ",
+    get: "Маблағи қабулшуда",
+    sellPrice: "Қурби фурӯш",
+    breakEven: "Арзиши аслӣ",
+    profit: "Фоидаи шумо",
+    save: "Захира кардан",
+    support: "Дастгирӣ",
+    hints: "Маслиҳатҳо",
+    step1Title: "Қадам 1. Буҷет",
+    step1Text: "Дар майдони Маблағ маблағи сарфшударо ворид кунед.",
+    step2Title: "Қадам 2. Ҳаҷм",
+    step2Text: "Дар майдони Маблағи қабулшуда USDT-ро ворид кунед, ки ба шумо расидааст.",
+    step3Title: "Қадам 3. Фоида",
+    step3Text: "Қурби фурӯшро ворид кунед. Мо фоидаи шуморо ҳисоб мекунем!",
+    gotIt: "Фаҳмо",
+    history: "Таърих",
+    historyEmpty: "Таърих холӣ аст",
+    clear: "Тоза кардан"
   }
 };
 
-export type Language = 'ru' | 'en';
+export type Language = 'ru' | 'en' | 'tj';
 export type Theme = 'light' | 'dark';

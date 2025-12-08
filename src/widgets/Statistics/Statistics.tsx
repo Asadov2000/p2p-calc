@@ -31,7 +31,7 @@ const StatCard = memo(({ icon, title, value, subtitle, borderColor, textColor, d
 
 StatCard.displayName = 'StatCard';
 
-export const Statistics = memo(() => {
+const Statistics = memo(() => {
   const store = useCalculatorStore();
   const history = store.history;
 
@@ -116,3 +116,4 @@ export const Statistics = memo(() => {
 });
 
 Statistics.displayName = 'Statistics';
+export { Statistics };
