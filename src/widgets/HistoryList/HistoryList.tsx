@@ -2,9 +2,52 @@ import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
 import { formatCurrency, formatTime, downloadJSON, downloadCSV, importHistoryFromFile } from "../../shared/lib/utils";
 import { translations } from "../../shared/lib/translations";
 import { Trash2, TrendingUp, ArrowRight, Search } from "lucide-react";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback, memo } from "react";
 
-export const HistoryList = () => {
+// Отдельный компонент для элемента истории (memo для оптимизации)
+interface HistoryItemProps {
+  item: any;
+  index: number;
+}
+
+const HistoryItemComponent = memo(({ item, index }: HistoryItemProps) => (
+  <div 
+    className={`bg-white dark:bg-ios-dark-surface p-4 rounded-[20px] shadow-sm border border-gray-100 dark:border-white/5 flex justify-between items-center animate-slide-in-right history-item-delay-${Math.min(index, 5)}`}
+  >
+    {/* Левая часть: Суммы обмена */}
+    <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+            <span>{formatCurrency(item.fiatAmount)} ₽</span>
+            <ArrowRight size={14} className="text-gray-400" />
+            <span>{item.cryptoAmount} USDT</span>
+        </div>
+        <div className="text-[10px] text-gray-400 font-medium flex gap-2">
+            <span>{formatTime(item.timestamp)}</span>
+            <span className="w-px h-3 bg-gray-300 dark:bg-gray-600"></span>
+            <span>Курс: {item.calculatedRate.toFixed(2)}</span>
+        </div>
+    </div>
+
+    {/* Правая часть: ПРОФИТ */}
+    <div className="flex flex-col items-end">
+        <span className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Профит</span>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${
+            (item.profitTarget || 0) > 0 
+            ? "bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400" 
+            : "bg-gray-100 dark:bg-gray-800 text-gray-500"
+        }`}>
+            {(item.profitTarget || 0) > 0 && <TrendingUp size={12} />}
+            <span className="font-bold text-sm">
+                {item.profitTarget ? `+${formatCurrency(item.profitTarget)}` : "0"} ₽
+            </span>
+        </div>
+    </div>
+  </div>
+));
+
+HistoryItemComponent.displayName = 'HistoryItem';
+
+export const HistoryList = memo(() => {
   const store = useCalculatorStore();
   const t = translations[store.language];
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,11 +77,12 @@ export const HistoryList = () => {
     return filtered;
   }, [store.history, searchQuery, filterType]);
 
-  const handleExportJSON = () => {
+  // useCallback для предотвращения создания новых функций на каждый рендер
+  const handleExportJSON = useCallback(() => {
     downloadJSON(store.history, `p2p-calc-history-${new Date().toISOString().split('T')[0]}.json`);
-  };
+  }, [store.history]);
 
-  const handleExportCSV = () => {
+  const handleExportCSV = useCallback(() => {
     const csvData = store.history.map(item => ({
       дата: new Date(item.timestamp).toLocaleString('ru-RU'),
       рубли: item.fiatAmount,
@@ -47,9 +91,9 @@ export const HistoryList = () => {
       профит: item.profitTarget || 0
     }));
     downloadCSV(csvData, `p2p-calc-history-${new Date().toISOString().split('T')[0]}.csv`);
-  };
+  }, [store.history]);
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -71,7 +115,7 @@ export const HistoryList = () => {
 
     // Очищаем input для возможности загрузки одного файла дважды
     event.target.value = '';
-  };
+  }, [store]);
 
   if (store.history.length === 0) {
     return (
@@ -167,42 +211,12 @@ export const HistoryList = () => {
       ) : (
         <div className="flex flex-col gap-3">
           {filteredHistory.map((item, index) => (
-            <div 
-              key={item.id} 
-              className={`bg-white dark:bg-ios-dark-surface p-4 rounded-[20px] shadow-sm border border-gray-100 dark:border-white/5 flex justify-between items-center animate-slide-in-right history-item-delay-${Math.min(index, 5)}`}
-            >
-              {/* Левая часть: Суммы обмена */}
-              <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                      <span>{formatCurrency(item.fiatAmount)} ₽</span>
-                      <ArrowRight size={14} className="text-gray-400" />
-                      <span>{item.cryptoAmount} USDT</span>
-                  </div>
-                  <div className="text-[10px] text-gray-400 font-medium flex gap-2">
-                      <span>{formatTime(item.timestamp)}</span>
-                      <span className="w-px h-3 bg-gray-300 dark:bg-gray-600"></span>
-                      <span>Курс: {item.calculatedRate.toFixed(2)}</span>
-                  </div>
-              </div>
-
-              {/* Правая часть: ПРОФИТ */}
-              <div className="flex flex-col items-end">
-                  <span className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Профит</span>
-                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${
-                      (item.profitTarget || 0) > 0 
-                      ? "bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400" 
-                      : "bg-gray-100 dark:bg-gray-800 text-gray-500"
-                  }`}>
-                      {(item.profitTarget || 0) > 0 && <TrendingUp size={12} />}
-                      <span className="font-bold text-sm">
-                          {item.profitTarget ? `+${formatCurrency(item.profitTarget)}` : "0"} ₽
-                      </span>
-                  </div>
-              </div>
-            </div>
+            <HistoryItemComponent key={item.id} item={item} index={index} />
           ))}
         </div>
       )}
     </div>
   );
-};
+});
+
+HistoryList.displayName = 'HistoryList';
