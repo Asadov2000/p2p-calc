@@ -263,3 +263,11 @@ input:focus {
 .history-item-delay-3 { animation-delay: 0.06s; }
 .history-item-delay-4 { animation-delay: 0.08s; }
 .history-item-delay-5 { animation-delay: 0.1s; }
+
+/* Классы для задержки анимации быстрых кнопок */
+.quick-btn-delay-0 { animation-delay: 0s; }
+.quick-btn-delay-1 { animation-delay: 0.05s; }
+.quick-btn-delay-2 { animation-delay: 0.1s; }
+.quick-btn-delay-3 { animation-delay: 0.15s; }
+.quick-btn-delay-4 { animation-delay: 0.2s; }
+.quick-btn-delay-5 { animation-delay: 0.25s; }

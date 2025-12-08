@@ -165,11 +165,11 @@ export const CalculatorForm = () => {
                  
                  {/* Быстрые кнопки */}
                  <div className="grid grid-cols-3 gap-2">
-                  {quickAmounts.map((item) => (
+                  {quickAmounts.map((item, idx) => (
                     <button
                       key={item.value}
                       onClick={() => handleQuickAmount(item.value)}
-                      className="py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-sm font-semibold text-gray-500 dark:text-gray-400 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors active:scale-95 border border-transparent"
+                      className={`py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-sm font-semibold text-gray-500 dark:text-gray-400 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors active:scale-95 border border-transparent animate-fade-in quick-btn-delay-${idx}`}
                     >
                       {item.label}
                     </button>
@@ -213,7 +213,7 @@ export const CalculatorForm = () => {
             </div>
 
             {/* Профит калькулятор */}
-            <div className="bg-white dark:bg-[#1C1C1E] rounded-[24px] p-2 shadow-sm border border-blue-100 dark:border-blue-900/30 overflow-hidden relative">
+            <div className="bg-white dark:bg-[#1C1C1E] rounded-[24px] p-2 shadow-sm border border-blue-100 dark:border-blue-900/30 overflow-hidden relative animate-scale-up">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 pointer-events-none" />
                 
                 <div className="relative p-4 space-y-4">
@@ -259,7 +259,7 @@ export const CalculatorForm = () => {
         <button 
             onClick={handleSave}
             disabled={!fiat || !crypto}
-            className="w-full py-4 bg-[#007AFF] hover:bg-blue-600 active:bg-blue-700 text-white rounded-[20px] font-bold text-[17px] shadow-lg shadow-blue-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none"
+            className="w-full py-4 bg-[#007AFF] hover:bg-blue-600 active:bg-blue-700 text-white rounded-[20px] font-bold text-[17px] shadow-lg shadow-blue-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none animate-pulse-glow"
         >
             {t.save}
         </button>
