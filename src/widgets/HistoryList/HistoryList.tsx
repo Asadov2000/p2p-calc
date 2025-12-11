@@ -1,7 +1,7 @@
 import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
 import { formatCurrency, formatTime, downloadJSON, downloadCSV, importHistoryFromFile } from "../../shared/lib/utils";
 import { translations } from "../../shared/lib/translations";
-import { Trash2, TrendingUp, ArrowRight, Search } from "lucide-react";
+import { Trash2, TrendingUp, TrendingDown, ArrowRight, Search, Download, Upload, Clock } from "lucide-react";
 import { useState, useMemo, useRef, useCallback, memo } from "react";
 
 // Отдельный компонент для элемента истории (memo для оптимизации)
@@ -10,40 +10,37 @@ interface HistoryItemProps {
   index: number;
 }
 
-const HistoryItemComponent = memo(({ item, index }: HistoryItemProps) => (
-  <div 
-    className={`bg-white dark:bg-ios-dark-surface p-4 rounded-[20px] shadow-sm border border-gray-100 dark:border-white/5 flex justify-between items-center animate-slide-in-right history-item-delay-${Math.min(index, 5)}`}
-  >
-    {/* Левая часть: Суммы обмена */}
-    <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-            <span>{formatCurrency(item.fiatAmount)} ₽</span>
-            <ArrowRight size={14} className="text-gray-400" />
-            <span>{item.cryptoAmount} USDT</span>
+const HistoryItemComponent = memo(({ item, index }: HistoryItemProps) => {
+  const isProfit = (item.profitTarget || 0) > 0;
+  
+  return (
+    <div 
+      className={`history-item animate-slide-in-right history-item-delay-${Math.min(index, 5)}`}
+    >
+      {/* Левая часть: Суммы обмена */}
+      <div className="flex flex-col gap-1.5 flex-1">
+        <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+          <span>{formatCurrency(item.fiatAmount)} ₽</span>
+          <ArrowRight size={14} className="text-[var(--text-quaternary)]" />
+          <span>{item.cryptoAmount} USDT</span>
         </div>
-        <div className="text-[10px] text-gray-400 font-medium flex gap-2">
-            <span>{formatTime(item.timestamp)}</span>
-            <span className="w-px h-3 bg-gray-300 dark:bg-gray-600"></span>
-            <span>Курс: {item.calculatedRate.toFixed(2)}</span>
+        <div className="text-xs text-[var(--text-tertiary)] flex items-center gap-2">
+          <span>{formatTime(item.timestamp)}</span>
+          <span className="w-1 h-1 rounded-full bg-[var(--separator-opaque)]"></span>
+          <span>Курс: {item.calculatedRate.toFixed(2)}</span>
         </div>
-    </div>
+      </div>
 
-    {/* Правая часть: ПРОФИТ */}
-    <div className="flex flex-col items-end">
-        <span className="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Профит</span>
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${
-            (item.profitTarget || 0) > 0 
-            ? "bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400" 
-            : "bg-gray-100 dark:bg-gray-800 text-gray-500"
-        }`}>
-            {(item.profitTarget || 0) > 0 && <TrendingUp size={12} />}
-            <span className="font-bold text-sm">
-                {item.profitTarget ? `+${formatCurrency(item.profitTarget)}` : "0"} ₽
-            </span>
-        </div>
+      {/* Правая часть: ПРОФИТ */}
+      <div className={`badge ${isProfit ? "badge-success" : "badge-danger"}`}>
+        {isProfit ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+        <span>
+          {item.profitTarget ? `${isProfit ? '+' : ''}${formatCurrency(item.profitTarget)}` : "0"} ₽
+        </span>
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 HistoryItemComponent.displayName = 'HistoryItem';
 
@@ -117,84 +114,102 @@ export const HistoryList = memo(() => {
     event.target.value = '';
   }, [store]);
 
+  // Очистка истории с подтверждением
+  const handleClearHistory = useCallback(() => {
+    if (window.confirm('Вы уверены, что хотите очистить всю историю? Это действие нельзя отменить.')) {
+      store.clearHistory();
+    }
+  }, [store]);
+
   if (store.history.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 opacity-40">
-        <div className="w-16 h-16 bg-gray-200 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
-            <Trash2 size={32} />
+      <div className="empty-state">
+        <div className="empty-state-icon">
+          <Clock size={36} />
         </div>
-        <p className="text-sm font-medium">{t.historyEmpty || "История пуста"}</p>
+        <p className="empty-state-title">{t.historyEmpty || "История пуста"}</p>
+        <p className="empty-state-text">Начните расчёты, чтобы увидеть историю</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 pb-20 animate-ios-slide">
-      <div className="flex justify-between items-end px-2">
-         <h2 className="text-xl font-bold dark:text-white">История</h2>
-         <div className="flex gap-2">
-           <button 
-             onClick={handleExportJSON}
-             className="text-xs font-medium text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 px-2 py-1.5 rounded-lg active:scale-95 transition-transform"
-             title="Экспорт в JSON"
-           >
-             📥 JSON
-           </button>
-           <button 
-             onClick={handleExportCSV}
-             className="text-xs font-medium text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10 px-2 py-1.5 rounded-lg active:scale-95 transition-transform"
-             title="Экспорт в CSV"
-           >
-             📊 CSV
-           </button>
-           <button 
-             onClick={() => fileInputRef.current?.click()}
-             className="text-xs font-medium text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-500/10 px-2 py-1.5 rounded-lg active:scale-95 transition-transform"
-             title="Импорт из файла"
-           >
-             📤 Импорт
-           </button>
-           <input
-             ref={fileInputRef}
-             type="file"
-             accept=".json"
-             onChange={handleImport}
-             className="hidden"
-             aria-label="Импорт истории из файла"
-           />
-           <button 
-             onClick={store.clearHistory}
-             className="text-xs font-medium text-red-500 bg-red-50 dark:bg-red-500/10 px-3 py-1.5 rounded-lg active:scale-95 transition-transform"
-           >
-             Очистить
-           </button>
-         </div>
+    <div className="space-y-5 pb-20 animate-fade-in">
+      <div className="flex-between">
+        <div>
+          <h2 className="section-header mb-0">История</h2>
+          <span className="text-xs text-[var(--text-tertiary)]">
+            {store.history.length}/50 записей
+          </span>
+        </div>
+        <div className="flex gap-2">
+          <button 
+            onClick={handleExportJSON}
+            className="btn-icon"
+            title="Экспорт в JSON"
+          >
+            <Download size={18} />
+          </button>
+          <button 
+            onClick={handleExportCSV}
+            className="btn-icon"
+            title="Экспорт в CSV"
+          >
+            <Download size={18} />
+          </button>
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            className="btn-icon"
+            title="Импорт из файла"
+          >
+            <Upload size={18} />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleImport}
+            className="hidden"
+            aria-label="Импорт истории из файла"
+          />
+          <button 
+            onClick={handleClearHistory}
+            className="btn-icon btn-icon-danger"
+            title="Очистить историю"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Поиск и фильтры */}
       <div className="space-y-3">
         {/* Поисковая строка */}
-        <div className="flex items-center gap-2 bg-white dark:bg-ios-dark-surface rounded-[16px] px-3 py-2.5 border border-gray-100 dark:border-white/5">
-          <Search size={16} className="text-gray-400" />
+        <div className="search-input">
+          <Search size={18} className="search-icon" />
           <input
             type="text"
-            placeholder="Поиск сумм..."
+            placeholder="Поиск по суммам..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-sm dark:text-white placeholder:text-gray-400"
+            className="search-field"
           />
         </div>
 
         {/* Кнопки фильтра */}
-        <div className="flex gap-2">
+        <div className="filter-pills">
           {(["all", "profit", "loss"] as const).map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
-              className={`text-xs font-medium px-3 py-2 rounded-lg transition-all ${
+              className={`filter-pill ${
                 filterType === type
-                  ? "bg-ios-blue text-white"
-                  : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300"
+                  ? type === "profit" 
+                    ? "filter-pill-success"
+                    : type === "loss"
+                    ? "filter-pill-danger"
+                    : "filter-pill-active"
+                  : ""
               }`}
             >
               {type === "all" ? "Все" : type === "profit" ? "Прибыль" : "Убыток"}
@@ -205,11 +220,11 @@ export const HistoryList = memo(() => {
 
       {/* Результаты поиска */}
       {filteredHistory.length === 0 ? (
-        <div className="text-center py-10 opacity-40">
-          <p className="text-sm text-gray-500">Ничего не найдено</p>
+        <div className="empty-state py-12">
+          <p className="empty-state-text">Ничего не найдено</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="list-container">
           {filteredHistory.map((item, index) => (
             <HistoryItemComponent key={item.id} item={item} index={index} />
           ))}

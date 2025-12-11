@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { XCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -13,43 +13,54 @@ export interface IosInputProps {
 }
 
 export const IosInput = memo(({ label, value, onChange, symbol, placeholder, transparent, onClear }: IosInputProps) => {
+  const [isFocused, setIsFocused] = useState(false);
+  
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   }, [onChange]);
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <label className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider ml-1 truncate">
+    <div className="input-group w-full">
+      <label className={cn(
+        "input-label transition-colors duration-200",
+        isFocused && "text-[var(--primary)]"
+      )}>
         {label}
       </label>
-      <div className="relative group">
+      <div className={cn(
+        "input-container",
+        transparent && "bg-transparent border-b border-[var(--separator)] rounded-none p-0 pb-3",
+        !transparent && isFocused && "bg-[var(--bg-primary)] border-[var(--primary)] shadow-[0_0_0_4px_var(--primary-light)]"
+      )}>
         <input
           type="text"
           inputMode="decimal"
           value={value}
           onChange={handleChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className={cn(
-              "w-full h-[52px] pl-4 pr-12 rounded-2xl text-[22px] font-semibold outline-none transition-all placeholder:text-gray-300 dark:placeholder:text-gray-700",
-              transparent 
-                  ? "bg-transparent text-gray-900 dark:text-white border-b-2 border-gray-100 dark:border-white/10 focus:border-blue-500 px-0 rounded-none h-14" 
-                  : "bg-gray-100/70 dark:bg-black/40 border border-transparent focus:bg-white dark:focus:bg-black focus:border-blue-500/50 text-gray-900 dark:text-white shadow-inner"
-          )}
+          className="input-field"
         />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center pr-4 gap-3">
-           {value && onClear && !transparent && (
-               <button 
-                 onClick={onClear} 
-                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" 
-                 title="Очистить"
-                 type="button"
-               >
-                 <XCircle size={18} fill="currentColor" className="opacity-40" />
-               </button>
-           )}
-           <span className="text-gray-400 font-bold text-sm select-none">
-              {symbol}
-           </span>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          {value && onClear && !transparent && (
+            <button 
+              onClick={onClear} 
+              className="text-[var(--text-quaternary)] hover:text-[var(--text-tertiary)] transition-colors active:scale-90" 
+              title="Очистить"
+              type="button"
+            >
+              <XCircle size={20} fill="currentColor" />
+            </button>
+          )}
+          <span className={cn(
+            "font-semibold text-sm px-2 py-1 rounded-md transition-all",
+            isFocused 
+              ? "text-[var(--primary)] bg-[var(--primary-light)]" 
+              : "text-[var(--text-tertiary)]"
+          )}>
+            {symbol}
+          </span>
         </div>
       </div>
     </div>

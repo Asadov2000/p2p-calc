@@ -20,7 +20,24 @@ export const translations = {
     
     history: "История",
     historyEmpty: "История пуста",
-    clear: "Очистить"
+    clear: "Очистить",
+
+    // Настройки
+    settings: "Настройки",
+    themeLabel: "Тема оформления",
+    themeLight: "Светлая",
+    themeDark: "Тёмная",
+    languageLabel: "Язык интерфейса",
+    quickButtons: "Быстрые кнопки",
+    labelPlaceholder: "Ярлык",
+    amountPlaceholder: "Сумма",
+    cancel: "Отмена",
+    analytics: "Аналитика",
+    analyticsDesc: "Просмотр локальных событий аналитики.",
+    loading: "Загрузка...",
+    close: "Закрыть",
+    delete: "Удалить",
+    add: "Добавить"
   },
   en: {
     title: "P2P Calculator",
@@ -43,7 +60,24 @@ export const translations = {
 
     history: "History",
     historyEmpty: "History is empty",
-    clear: "Clear"
+    clear: "Clear",
+
+    // Settings
+    settings: "Settings",
+    themeLabel: "Theme",
+    themeLight: "Light",
+    themeDark: "Dark",
+    languageLabel: "Language",
+    quickButtons: "Quick buttons",
+    labelPlaceholder: "Label",
+    amountPlaceholder: "Amount",
+    cancel: "Cancel",
+    analytics: "Analytics",
+    analyticsDesc: "View local analytics events.",
+    loading: "Loading...",
+    close: "Close",
+    delete: "Delete",
+    add: "Add"
   },
   tj: {
     title: "P2P Ҳисобкунак",
@@ -64,7 +98,24 @@ export const translations = {
     gotIt: "Фаҳмо",
     history: "Таърих",
     historyEmpty: "Таърих холӣ аст",
-    clear: "Тоза кардан"
+    clear: "Тоза кардан",
+
+    // Settings
+    settings: "Танзимот",
+    themeLabel: "Мавзӯъ",
+    themeLight: "Рӯшан",
+    themeDark: "Торик",
+    languageLabel: "Забон",
+    quickButtons: "Тугмаҳои зуд",
+    labelPlaceholder: "Нишона",
+    amountPlaceholder: "Маблағ",
+    cancel: "Бекор",
+    analytics: "Таҳлил",
+    analyticsDesc: "Дидани ҳодисаҳои маҳаллӣ.",
+    loading: "Боркунӣ...",
+    close: "Пӯшидан",
+    delete: "Нест кардан",
+    add: "Илова кардан"
   }
 };
 

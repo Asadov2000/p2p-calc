@@ -64,10 +64,11 @@ function App() {
         (async () => {
           try {
             const Sentry = await import('@sentry/react');
-            const Tracing = await import('@sentry/tracing');
             Sentry.init({
               dsn,
-              integrations: [new Tracing.BrowserTracing()],
+              integrations: [
+                Sentry.browserTracingIntegration(),
+              ],
               tracesSampleRate: 0.1,
               environment: (import.meta as any).env?.MODE || 'production'
             });

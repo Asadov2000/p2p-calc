@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { IosInput } from '../../../shared/ui/IosInput';
+import { ArrowDownUp } from 'lucide-react';
 
 interface QuickButton {
   label: string;
@@ -35,15 +36,15 @@ export const CalculatorInputs = memo(({
   handleInputChange,
 }: CalculatorInputsProps) => {
   return (
-    <div className="bg-white dark:bg-[#1C1C1E] rounded-[28px] p-6 shadow-sm space-y-6">
+    <div className="card-float p-6 space-y-5 animate-fade-in">
       {/* Секция: Отдаю (RUB) */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         <IosInput 
           label={t.give}
           value={fiatInput}
           onChange={(val) => handleInputChange(onFiatChange, val)}
           onClear={onFiatClear}
-          symbol="RUB"
+          symbol="₽"
           placeholder="0"
         />
          
@@ -53,7 +54,7 @@ export const CalculatorInputs = memo(({
             <button
               key={item.value}
               onClick={() => onQuickAmount(item.value)}
-              className={`py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-sm font-semibold text-gray-500 dark:text-gray-400 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-colors active:scale-95 border border-transparent animate-fade-in quick-btn-delay-${idx}`}
+              className={`btn-quick delay-${idx + 1}`}
             >
               {item.label}
             </button>
@@ -61,7 +62,14 @@ export const CalculatorInputs = memo(({
         </div>
       </div>
       
-      <div className="h-px bg-gray-100 dark:bg-gray-800" />
+      {/* Разделитель с иконкой */}
+      <div className="flex items-center gap-4 py-2">
+        <div className="flex-1 h-px bg-[var(--separator)]" />
+        <div className="w-10 h-10 rounded-xl bg-[var(--fill-tertiary)] flex items-center justify-center">
+          <ArrowDownUp size={18} className="text-[var(--text-tertiary)]" />
+        </div>
+        <div className="flex-1 h-px bg-[var(--separator)]" />
+      </div>
       
       {/* Секция: Получаю (USDT) */}
       <IosInput 

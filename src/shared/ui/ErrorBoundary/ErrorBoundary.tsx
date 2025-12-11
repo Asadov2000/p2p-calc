@@ -32,9 +32,22 @@ export class ErrorBoundary extends React.Component<{ children?: React.ReactNode 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-lg">
-          <h3 className="text-lg font-bold text-red-700 dark:text-red-300">Произошла ошибка</h3>
-          <p className="text-sm text-gray-700 dark:text-gray-300">Мы зафиксировали ошибку и постараемся её исправить. Обновите страницу или попробуйте позже.</p>
+        <div className="card-glass p-6 border-l-4 border-rose-500">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center text-white text-2xl">
+              ⚠️
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[var(--text-primary)]">Произошла ошибка</h3>
+              <p className="text-sm text-[var(--text-secondary)]">Обновите страницу или попробуйте позже</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 w-full py-3 btn-primary rounded-2xl font-semibold"
+          >
+            Обновить страницу
+          </button>
         </div>
       );
     }

@@ -234,7 +234,7 @@ export const CalculatorForm = memo(() => {
             {(store.fiatInput || store.cryptoInput || sellPrice) && (
                 <button 
                     onClick={handleReset}
-                    className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] flex items-center justify-center text-gray-500 hover:text-red-500 shadow-sm transition-all active:scale-90"
+                    className="w-11 h-11 rounded-2xl glass flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all active:scale-90"
                     title="Очистить все"
                     aria-label="Очистить все"
                     tabIndex={0}
@@ -243,8 +243,8 @@ export const CalculatorForm = memo(() => {
                     <Eraser size={20} aria-hidden="true" />
                 </button>
             )}
-            <button onClick={() => setShowHintModal(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center text-blue-500 active:scale-90 transition-transform" title="Подсказки" aria-label="Подсказки" tabIndex={0} role="button"><Info size={22} aria-hidden="true" /></button>
-            <button onClick={() => setShowSettings(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1C1E] shadow-sm flex items-center justify-center text-gray-600 dark:text-gray-400 active:scale-90 transition-transform" title="Настройки" aria-label="Настройки" tabIndex={0} role="button"><Settings size={20} aria-hidden="true" /></button>
+            <button onClick={() => setShowHintModal(true)} className="w-11 h-11 rounded-2xl glass flex items-center justify-center text-blue-500 active:scale-90 transition-all hover:bg-blue-50 dark:hover:bg-blue-500/10" title="Подсказки" aria-label="Подсказки" tabIndex={0} role="button"><Info size={22} aria-hidden="true" /></button>
+            <button onClick={() => setShowSettings(true)} className="w-11 h-11 rounded-2xl glass flex items-center justify-center text-gray-600 dark:text-gray-400 active:scale-90 transition-all hover:bg-gray-100 dark:hover:bg-white/10" title="Настройки" aria-label="Настройки" tabIndex={0} role="button"><Settings size={20} aria-hidden="true" /></button>
         </div>
 
         {/* Область для PDF экспорта */}
@@ -290,7 +290,7 @@ export const CalculatorForm = memo(() => {
         <button 
             onClick={handleSave}
             disabled={!fiat || !crypto}
-            className="w-full py-4 bg-[#007AFF] hover:bg-blue-600 active:bg-blue-700 text-white rounded-[20px] font-bold text-[17px] shadow-lg shadow-blue-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none animate-pulse-glow"
+            className="w-full py-4 btn-gradient text-white rounded-[20px] font-bold text-[17px] shadow-blue active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none disabled:bg-gray-300 disabled:bg-none animate-glow"
             aria-label="Сохранить"
             tabIndex={0}
             role="button"
@@ -298,7 +298,7 @@ export const CalculatorForm = memo(() => {
             {t.save}
         </button>
 
-        <button onClick={openSupport} className="flex items-center justify-center gap-2 text-gray-400 hover:text-blue-500 transition-colors py-2 text-xs font-medium opacity-70" aria-label="Поддержка" tabIndex={0} role="button">
+        <button onClick={openSupport} className="flex items-center justify-center gap-2 text-gray-400 hover:text-blue-500 transition-colors py-2 text-xs font-medium" aria-label="Поддержка" tabIndex={0} role="button">
             <MessageCircleQuestion size={16} /> {t.support}
         </button>
 

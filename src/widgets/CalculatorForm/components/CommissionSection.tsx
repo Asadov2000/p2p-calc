@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { formatCurrency } from '../../../shared/lib/utils';
 import { IosInput } from '../../../shared/ui/IosInput';
+import { Share2, FileDown, Percent, Wallet } from 'lucide-react';
 
 interface CommissionSectionProps {
   commissionPercent: string;
@@ -20,7 +21,7 @@ export const CommissionSection = memo(({
   onExportPDF,
 }: CommissionSectionProps) => {
   return (
-    <div className="bg-white dark:bg-[#1C1C1E] rounded-[20px] p-4 shadow-sm space-y-3">
+    <div className="card-solid space-y-5">
       <div>
         <IosInput
           label="Комиссия (%)"
@@ -29,26 +30,44 @@ export const CommissionSection = memo(({
           symbol="%"
           placeholder="0"
         />
-        <div className="flex justify-between text-sm mt-2 text-gray-500">
-          <div>Комиссия: <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(commissionAmount)}</span></div>
-          <div>Чистыми: <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(netAfterCommission)}</span></div>
+        <div className="flex-between mt-5">
+          <div className="flex items-center gap-3">
+            <div className="stat-icon small" style={{ background: 'var(--danger-light)', color: 'var(--danger)' }}>
+              <Percent size={14} />
+            </div>
+            <div>
+              <span className="text-xs text-[var(--text-tertiary)]">Комиссия</span>
+              <p className="font-semibold text-[var(--danger)]">{formatCurrency(commissionAmount)} ₽</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="stat-icon small" style={{ background: 'var(--success-light)', color: 'var(--success)' }}>
+              <Wallet size={14} />
+            </div>
+            <div className="text-right">
+              <span className="text-xs text-[var(--text-tertiary)]">Чистыми</span>
+              <p className="font-semibold text-[var(--success)]">{formatCurrency(netAfterCommission)} ₽</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="flex gap-3">
         <button 
           onClick={onShare} 
-          className="flex-1 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg font-medium hover:bg-blue-50 active:scale-95 transition-colors" 
+          className="btn btn-secondary flex-1" 
           aria-label="Поделиться"
         >
+          <Share2 size={18} />
           Поделиться
         </button>
         <button 
           onClick={onExportPDF} 
-          className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium active:scale-95 transition-colors" 
+          className="btn btn-primary flex-1" 
           aria-label="Экспорт в PDF"
         >
-          Экспорт PDF
+          <FileDown size={18} />
+          PDF
         </button>
       </div>
     </div>

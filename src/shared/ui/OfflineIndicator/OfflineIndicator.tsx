@@ -22,9 +22,14 @@ export const OfflineIndicator = memo(() => {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-orange-500 text-white rounded-lg p-3 flex items-center gap-2 shadow-lg animate-pulse z-50">
-      <WifiOff size={18} />
-      <span className="text-sm font-medium">Вы offline - операции сохраняются локально</span>
+    <div className="fixed bottom-24 left-4 right-4 max-w-md mx-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-2xl p-4 flex items-center gap-3 shadow-xl shadow-amber-500/25 animate-pulse z-50 backdrop-blur-lg">
+      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+        <WifiOff size={20} />
+      </div>
+      <div>
+        <span className="text-sm font-bold">Вы offline</span>
+        <p className="text-xs opacity-90">Операции сохраняются локально</p>
+      </div>
     </div>
   );
 });
