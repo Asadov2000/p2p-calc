@@ -3,6 +3,7 @@ import { useCalculatorStore } from "../../features/p2p-calculation/model/store";
 import { calculateRate, parseNumber } from "../../features/p2p-calculation/lib/math";
 import { formatCurrency, formatInputNumber, copyToClipboard } from "../../shared/lib/utils";
 import { translations } from "../../shared/lib/translations";
+import { analytics } from "../../shared/lib/analytics";
 import { v4 as uuidv4 } from 'uuid';
 import WebApp from "@twa-dev/sdk";
 import { Info, Settings, MessageCircleQuestion, Eraser } from "lucide-react";
@@ -154,6 +155,7 @@ export const CalculatorForm = memo(() => {
   const handleShare = useCallback(async () => {
     const text = `P2P Calc\nОтдаю: ${formatCurrency(fiat)}\nПолучаю: ${crypto.toFixed(6)}\nКурс: ${breakEven.toFixed(6)}\nПрибыль: ${formatCurrency(estimatedProfit)}`;
     try {
+      analytics.track('share', { profit: estimatedProfit });
       if ((navigator as any).share) {
         await (navigator as any).share({ title: 'P2P Calc', text });
         safeHaptic.notificationOccurred('success');
@@ -185,6 +187,7 @@ export const CalculatorForm = memo(() => {
     };
 
     store.addToHistory(historyItem);
+    analytics.track('calculation_saved', { fiat, crypto, profit: estimatedProfit, rate: breakEven });
     safeWebApp.showAlert(`Сохранено! Профит: ${formatCurrency(estimatedProfit)} ₽`);
     
   }, [fiat, crypto, estimatedProfit, breakEven, sellRate, store]);
@@ -193,6 +196,7 @@ export const CalculatorForm = memo(() => {
     safeHaptic.impactOccurred('light');
     store.resetCalculator();
     setSellPrice("");
+    analytics.track('calculator_reset');
   }, [store]);
 
   const handleCopyToClipboard = useCallback((text: string, id: string) => {

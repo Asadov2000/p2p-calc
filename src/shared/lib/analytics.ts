@@ -26,6 +26,18 @@ const write = (list: EventRecord[]) => {
   }
 };
 
+// Umami tracking helper (window.umami доступна если скрипт загружен)
+const trackUmami = (eventName: string, eventData?: Record<string, any>) => {
+  try {
+    const umami = (window as any).umami;
+    if (umami?.track) {
+      umami.track(eventName, eventData);
+    }
+  } catch (e) {
+    console.debug('umami track error', e);
+  }
+};
+
 export const analytics = {
   track: (type: string, payload?: Record<string, any>) => {
     const rec: EventRecord = { id: cryptoRandomId(), type, payload, ts: Date.now() };
@@ -36,6 +48,10 @@ export const analytics = {
     write(list);
     // also log to console for dev
     try { console.debug('analytics.track', rec); } catch (e) {}
+    
+    // Отправляем в Umami (если настроен)
+    trackUmami(type, payload);
+    
     // Если настроен Sentry DSN, добавим breadcrumb (лениво импортируем Sentry)
     try {
       const dsn = (import.meta as any).env?.VITE_SENTRY_DSN;
@@ -48,9 +64,37 @@ export const analytics = {
       }
     } catch (e) { /* ignore in non-browser */ }
   },
+  
+  // Трекинг просмотра страницы
+  pageView: (page: string) => {
+    trackUmami('pageview', { page });
+    analytics.track('page_view', { page });
+  },
+  
   list: (): EventRecord[] => read(),
   clear: () => write([]),
   export: (): string => JSON.stringify(read(), null, 2),
+  
+  // Получить статистику из локального хранилища
+  getStats: () => {
+    const events = read();
+    const now = Date.now();
+    const day = 24 * 60 * 60 * 1000;
+    const week = 7 * day;
+    const month = 30 * day;
+    
+    return {
+      total: events.length,
+      today: events.filter(e => now - e.ts < day).length,
+      thisWeek: events.filter(e => now - e.ts < week).length,
+      thisMonth: events.filter(e => now - e.ts < month).length,
+      byType: events.reduce((acc, e) => {
+        acc[e.type] = (acc[e.type] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      lastEvents: events.slice(-10).reverse(),
+    };
+  },
 };
 
 function cryptoRandomId() {
