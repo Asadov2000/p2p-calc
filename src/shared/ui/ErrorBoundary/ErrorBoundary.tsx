@@ -3,7 +3,7 @@ import { analytics } from '../../lib/analytics';
 
 interface State { hasError: boolean; error?: any }
 
-export class ErrorBoundary extends React.Component<{}, State> {
+export class ErrorBoundary extends React.Component<{ children?: React.ReactNode }, State> {
   constructor(props: {}) {
     super(props);
     this.state = { hasError: false };

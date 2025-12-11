@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar } from '../shared/ui/Avatar';
-import { Sun, Moon, Settings, Zap } from 'lucide-react';
+import { Sun, Moon, Settings } from 'lucide-react';
 import { useCalculatorStore } from '../features/p2p-calculation/model/store';
 
 export const Header: React.FC = () => {
