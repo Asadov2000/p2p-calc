@@ -37,7 +37,9 @@ export const translations = {
     loading: "Загрузка...",
     close: "Закрыть",
     delete: "Удалить",
-    add: "Добавить"
+    add: "Добавить",
+    showCommission: "Показывать комиссию",
+    showCommissionDesc: "Отображать секцию расчёта комиссии"
   },
   en: {
     title: "P2P Calculator",
@@ -77,7 +79,9 @@ export const translations = {
     loading: "Loading...",
     close: "Close",
     delete: "Delete",
-    add: "Add"
+    add: "Add",
+    showCommission: "Show commission",
+    showCommissionDesc: "Display commission calculation section"
   },
   tj: {
     title: "P2P Ҳисобкунак",
@@ -115,7 +119,9 @@ export const translations = {
     loading: "Боркунӣ...",
     close: "Пӯшидан",
     delete: "Нест кардан",
-    add: "Илова кардан"
+    add: "Илова кардан",
+    showCommission: "Нишон додани комиссия",
+    showCommissionDesc: "Намоиш додани қисмати ҳисоби комиссия"
   }
 };
 

@@ -21,6 +21,7 @@ interface CalculatorState {
   language: Language;
   theme: Theme;
   quickButtons: { label: string; value: string }[];
+  showCommission: boolean;
 
   setFiat: (value: string) => void;
   setCrypto: (value: string) => void;
@@ -35,6 +36,7 @@ interface CalculatorState {
   setLanguage: (lang: Language) => void;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
+  setShowCommission: (show: boolean) => void;
 }
 
 export const useCalculatorStore = create<CalculatorState>()(
@@ -54,6 +56,7 @@ export const useCalculatorStore = create<CalculatorState>()(
       history: [],
       language: 'ru',
       theme: 'light',
+      showCommission: false,
 
       setFiat: (value) => set({ fiatInput: value }),
       setCrypto: (value) => set({ cryptoInput: value }),
@@ -101,6 +104,8 @@ export const useCalculatorStore = create<CalculatorState>()(
           }
           return { theme };
         }),
+
+      setShowCommission: (show) => set({ showCommission: show }),
     }),
     {
       name: 'p2p-calculator-storage',

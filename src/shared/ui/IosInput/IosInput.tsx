@@ -40,21 +40,21 @@ export const IosInput = memo(({ label, value, onChange, symbol, placeholder, tra
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="input-field"
+          className="input-field pr-20"
         />
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           {value && onClear && !transparent && (
             <button 
               onClick={onClear} 
-              className="text-[var(--text-quaternary)] hover:text-[var(--text-tertiary)] transition-colors active:scale-90" 
+              className="text-[var(--text-quaternary)] hover:text-[var(--text-tertiary)] transition-colors active:scale-90 flex-shrink-0" 
               title="Очистить"
               type="button"
             >
-              <XCircle size={20} fill="currentColor" />
+              <XCircle size={18} fill="currentColor" className="sm:w-5 sm:h-5" />
             </button>
           )}
           <span className={cn(
-            "font-semibold text-sm px-2 py-1 rounded-md transition-all",
+            "font-semibold text-xs sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md transition-all flex-shrink-0",
             isFocused 
               ? "text-[var(--primary)] bg-[var(--primary-light)]" 
               : "text-[var(--text-tertiary)]"

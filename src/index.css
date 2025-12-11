@@ -204,6 +204,7 @@ html, body, #root {
   height: 100%;
   min-height: 100vh;
   min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 body {
@@ -306,6 +307,8 @@ button {
     0 8px 24px rgba(0, 0, 0, 0.08),
     0 0 0 0.5px var(--separator);
   transition: all 0.4s var(--ease-spring);
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .card-float:hover {
@@ -508,6 +511,7 @@ html.dark .card-float:hover {
 
 .input-field {
   width: 100%;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -517,6 +521,7 @@ html.dark .card-float:hover {
   letter-spacing: -0.03em;
   color: var(--text-primary);
   caret-color: var(--primary);
+  text-overflow: ellipsis;
 }
 
 .input-field::placeholder {
@@ -746,7 +751,7 @@ html.dark .card-float:hover {
 }
 
 .modal-content {
-  width: 100%;
+  width: calc(100% - 32px);
   max-width: 420px;
   max-height: 85vh;
   background: var(--bg-primary);
@@ -754,6 +759,7 @@ html.dark .card-float:hover {
   box-shadow: var(--shadow-xl);
   overflow: hidden;
   animation: slideUp 0.35s var(--ease-spring);
+  margin: 0 auto;
 }
 
 @media (min-width: 640px) {
@@ -1123,6 +1129,8 @@ html.dark .card-float:hover {
   max-width: 500px;
   margin: 0 auto;
   padding: 0 16px;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* ============================================
@@ -1277,6 +1285,7 @@ html.dark .card-float:hover {
   padding-top: calc(var(--safe-top, 16px) + 16px);
   padding-bottom: 100px;
   background: var(--bg-base);
+  overflow-x: hidden;
 }
 
 /* Empty State */

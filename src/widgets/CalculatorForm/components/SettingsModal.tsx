@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Sun, Moon, Trash2, Settings, Palette, Globe, Zap, BarChart3, Plus } from 'lucide-react';
+import { X, Sun, Moon, Trash2, Settings, Palette, Globe, Zap, BarChart3, Plus, Percent } from 'lucide-react';
 import { Suspense } from 'react';
 import { translations } from '../../../shared/lib/translations';
 const AnalyticsPanel = React.lazy(() => import('../../../shared/ui/AnalyticsPanel/AnalyticsPanel'));
@@ -21,6 +21,8 @@ interface SettingsModalProps {
   onSetLanguage: (lang: 'ru' | 'en' | 'tj') => void;
   onSaveQuickButtons: (buttons: QuickButton[]) => void;
   sanitizeInput: (value: string) => string;
+  showCommission: boolean;
+  onSetShowCommission: (show: boolean) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -35,6 +37,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onSetLanguage,
   onSaveQuickButtons,
   sanitizeInput,
+  showCommission,
+  onSetShowCommission,
 }) => {
   if (!isOpen) return null;
 
@@ -94,6 +98,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   {lang.toUpperCase()}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Показывать комиссию */}
+          <div className="settings-section">
+            <div className="flex items-center justify-between">
+              <div className="settings-label">
+                <Percent size={16} />
+                <div>
+                  <span>{t.showCommission}</span>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-0.5">{t.showCommissionDesc}</p>
+                </div>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showCommission}
+                  onChange={(e) => onSetShowCommission(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-[var(--fill-tertiary)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
+              </label>
             </div>
           </div>
 

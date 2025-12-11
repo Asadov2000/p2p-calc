@@ -277,14 +277,16 @@ export const CalculatorForm = memo(() => {
           />
 
           {/* Комиссия и действия: шаринг / экспорт */}
-          <CommissionSection
-            commissionPercent={commissionPercent}
-            commissionAmount={commissionAmount}
-            netAfterCommission={netAfterCommission}
-            onCommissionChange={(val) => setCommissionPercent(sanitizeInput(val))}
-            onShare={handleShare}
-            onExportPDF={handleExportPDF}
-          />
+          {store.showCommission && (
+            <CommissionSection
+              commissionPercent={commissionPercent}
+              commissionAmount={commissionAmount}
+              netAfterCommission={netAfterCommission}
+              onCommissionChange={(val) => setCommissionPercent(sanitizeInput(val))}
+              onShare={handleShare}
+              onExportPDF={handleExportPDF}
+            />
+          )}
         </div>
 
         <button 
@@ -317,6 +319,8 @@ export const CalculatorForm = memo(() => {
         onSetLanguage={store.setLanguage}
         onSaveQuickButtons={store.setQuickButtons}
         sanitizeInput={sanitizeInput}
+        showCommission={store.showCommission}
+        onSetShowCommission={store.setShowCommission}
       />
 
       {/* Hints modal */}
