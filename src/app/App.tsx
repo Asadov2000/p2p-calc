@@ -15,35 +15,53 @@ const StatisticsPage = lazy(() => import('../pages/statistics/StatisticsPage'));
 // Безопасный вызов WebApp методов (работает и вне Telegram)
 const safeWebApp = {
   ready: () => {
-    try { WebApp?.ready?.(); } catch (e) { console.debug('WebApp.ready not available'); }
+    try {
+      WebApp?.ready?.();
+    } catch (e) {
+      console.debug('WebApp.ready not available');
+    }
   },
   expand: () => {
-    try { WebApp?.expand?.(); } catch (e) { console.debug('WebApp.expand not available'); }
+    try {
+      WebApp?.expand?.();
+    } catch (e) {
+      console.debug('WebApp.expand not available');
+    }
   },
   setHeaderColor: (color: string) => {
-    try { 
+    try {
       // Telegram SDK принимает hex цвета или специальные значения
-      WebApp?.setHeaderColor?.(color as any); 
-    } catch (e) { console.debug('WebApp.setHeaderColor not available'); }
+      WebApp?.setHeaderColor?.(color as any);
+    } catch (e) {
+      console.debug('WebApp.setHeaderColor not available');
+    }
   },
   setBackgroundColor: (color: string) => {
-    try { 
+    try {
       // Telegram SDK принимает hex цвета или специальные значения
-      WebApp?.setBackgroundColor?.(color as any); 
-    } catch (e) { console.debug('WebApp.setBackgroundColor not available'); }
-  }
+      WebApp?.setBackgroundColor?.(color as any);
+    } catch (e) {
+      console.debug('WebApp.setBackgroundColor not available');
+    }
+  },
 };
 
 function App() {
   const theme = useCalculatorStore((state) => state.theme);
-  const [currentPage, setCurrentPage] = useState<'calculator' | 'history' | 'statistics'>('calculator');
+  const [currentPage, setCurrentPage] = useState<'calculator' | 'history' | 'statistics'>(
+    'calculator'
+  );
 
   useEffect(() => {
     safeWebApp.ready();
     safeWebApp.expand();
     // Initialize our safeTelegram wrapper as well (no-op outside Telegram)
-    try { safeTelegram.ready(); } catch (e) { /* ignore */ }
-    
+    try {
+      safeTelegram.ready();
+    } catch (e) {
+      /* ignore */
+    }
+
     // Применяем тему к HTML тегу
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -66,17 +84,19 @@ function App() {
             const Sentry = await import('@sentry/react');
             Sentry.init({
               dsn,
-              integrations: [
-                Sentry.browserTracingIntegration(),
-              ],
+              integrations: [Sentry.browserTracingIntegration()],
               tracesSampleRate: 0.1,
-              environment: (import.meta as any).env?.MODE || 'production'
+              environment: (import.meta as any).env?.MODE || 'production',
             });
             analytics.track('sentry_init', { enabled: true });
-          } catch (e) { console.debug('Sentry init failed', e); }
+          } catch (e) {
+            console.debug('Sentry init failed', e);
+          }
         })();
       }
-    } catch (e) { /* ignore non-browser */ }
+    } catch (e) {
+      /* ignore non-browser */
+    }
   }, [theme]);
 
   useEffect(() => {
@@ -130,16 +150,16 @@ function App() {
   return (
     <Layout currentPage={currentPage} onPageChange={setCurrentPage}>
       <ErrorBoundary>
-        <Suspense fallback={<div className="flex items-center justify-center py-20 text-gray-400 animate-fade-in">Загрузка...</div>}>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center py-20 text-gray-400 animate-fade-in">
+              Загрузка...
+            </div>
+          }
+        >
           <SwitchTransition mode="out-in">
-            <CSSTransition
-              key={currentPage}
-              timeout={400}
-              classNames="page-transition"
-            >
-              <div>
-                {renderPage()}
-              </div>
+            <CSSTransition key={currentPage} timeout={400} classNames="page-transition">
+              <div>{renderPage()}</div>
             </CSSTransition>
           </SwitchTransition>
         </Suspense>

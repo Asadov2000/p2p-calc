@@ -1,7 +1,10 @@
 import React from 'react';
 import { analytics } from '../../lib/analytics';
 
-interface State { hasError: boolean; error?: any }
+interface State {
+  hasError: boolean;
+  error?: any;
+}
 
 export class ErrorBoundary extends React.Component<{ children?: React.ReactNode }, State> {
   constructor(props: {}) {
@@ -20,12 +23,22 @@ export class ErrorBoundary extends React.Component<{ children?: React.ReactNode 
       try {
         const dsn = (import.meta as any).env?.VITE_SENTRY_DSN;
         if (dsn) {
-          import('@sentry/react').then(Sentry => {
-            try { Sentry.captureException(error); } catch (e) { console.debug('sentry capture error', e); }
-          }).catch(() => {});
+          import('@sentry/react')
+            .then((Sentry) => {
+              try {
+                Sentry.captureException(error);
+              } catch (e) {
+                console.debug('sentry capture error', e);
+              }
+            })
+            .catch(() => {});
         }
-      } catch (e) { /* ignore */ }
-    } catch (e) { console.debug('analytics error', e); }
+      } catch (e) {
+        /* ignore */
+      }
+    } catch (e) {
+      console.debug('analytics error', e);
+    }
     console.error('Unhandled error captured by ErrorBoundary', error, info);
   }
 
@@ -39,11 +52,13 @@ export class ErrorBoundary extends React.Component<{ children?: React.ReactNode 
             </div>
             <div>
               <h3 className="text-lg font-bold text-[var(--text-primary)]">Произошла ошибка</h3>
-              <p className="text-sm text-[var(--text-secondary)]">Обновите страницу или попробуйте позже</p>
+              <p className="text-sm text-[var(--text-secondary)]">
+                Обновите страницу или попробуйте позже
+              </p>
             </div>
           </div>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="mt-4 w-full py-3 btn-primary rounded-2xl font-semibold"
           >
             Обновить страницу

@@ -21,7 +21,7 @@ interface CalculatorState {
   language: Language;
   theme: Theme;
   quickButtons: { label: string; value: string }[];
-  
+
   setFiat: (value: string) => void;
   setCrypto: (value: string) => void;
   setQuickButtons: (items: { label: string; value: string }[]) => void;
@@ -40,8 +40,8 @@ interface CalculatorState {
 export const useCalculatorStore = create<CalculatorState>()(
   persist(
     (set) => ({
-      fiatInput: "",
-      cryptoInput: "",
+      fiatInput: '',
+      cryptoInput: '',
       // Быстрые кнопки по умолчанию — можно настроить пользователем
       quickButtons: [
         { value: '5000', label: '5k' },
@@ -58,41 +58,49 @@ export const useCalculatorStore = create<CalculatorState>()(
       setFiat: (value) => set({ fiatInput: value }),
       setCrypto: (value) => set({ cryptoInput: value }),
       setQuickButtons: (items) => set({ quickButtons: items }),
-      addQuickButton: (item) => set((state) => ({ quickButtons: [item, ...state.quickButtons].slice(0, 12) })),
-      removeQuickButton: (value) => set((state) => ({ quickButtons: state.quickButtons.filter(i => i.value !== value) })),
-      updateQuickButton: (value, label) => set((state) => ({ quickButtons: state.quickButtons.map(i => i.value === value ? { ...i, label } : i) })),
-      
-      addToHistory: (item) => set((state) => ({ 
-        history: [item, ...state.history].slice(0, 50) // Храним последние 50 записей
-      })),
+      addQuickButton: (item) =>
+        set((state) => ({ quickButtons: [item, ...state.quickButtons].slice(0, 12) })),
+      removeQuickButton: (value) =>
+        set((state) => ({ quickButtons: state.quickButtons.filter((i) => i.value !== value) })),
+      updateQuickButton: (value, label) =>
+        set((state) => ({
+          quickButtons: state.quickButtons.map((i) => (i.value === value ? { ...i, label } : i)),
+        })),
+
+      addToHistory: (item) =>
+        set((state) => ({
+          history: [item, ...state.history].slice(0, 50), // Храним последние 50 записей
+        })),
 
       setHistory: (items) => set({ history: items }),
 
       clearHistory: () => set({ history: [] }), // Реализация очистки
 
-      resetCalculator: () => set({ fiatInput: "", cryptoInput: "" }),
-      
+      resetCalculator: () => set({ fiatInput: '', cryptoInput: '' }),
+
       setLanguage: (lang) => set({ language: lang }),
-      
-      toggleTheme: () => set((state) => {
-        const newTheme = state.theme === 'light' ? 'dark' : 'light';
-        // Меняем класс на html теге для Tailwind
-        if (newTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-        return { theme: newTheme };
-      }),
-      
-      setTheme: (theme) => set(() => {
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-        return { theme };
-      }),
+
+      toggleTheme: () =>
+        set((state) => {
+          const newTheme = state.theme === 'light' ? 'dark' : 'light';
+          // Меняем класс на html теге для Tailwind
+          if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          return { theme: newTheme };
+        }),
+
+      setTheme: (theme) =>
+        set(() => {
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+          return { theme };
+        }),
     }),
     {
       name: 'p2p-calculator-storage',
