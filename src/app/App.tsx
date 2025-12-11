@@ -101,17 +101,54 @@ function App() {
 
   useEffect(() => {
     let touchStartX = 0;
+    let touchStartY = 0;
     let touchEndX = 0;
+    let touchEndY = 0;
+    let isSwipeBlocked = false;
+
     const handleTouchStart = (e: TouchEvent) => {
-      touchStartX = e.touches[0].clientX;
+      // Блокируем свайп если тап начался на интерактивном элементе
+      const target = e.target as HTMLElement;
+      const tagName = target.tagName.toLowerCase();
+      const isInteractive =
+        tagName === 'input' ||
+        tagName === 'textarea' ||
+        tagName === 'select' ||
+        tagName === 'button' ||
+        target.isContentEditable ||
+        target.closest('input, textarea, select, button, [contenteditable="true"], .no-swipe');
+
+      isSwipeBlocked = !!isInteractive;
+
+      if (!isSwipeBlocked) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchEndX = touchStartX;
+        touchEndY = touchStartY;
+      }
     };
+
     const handleTouchMove = (e: TouchEvent) => {
-      touchEndX = e.touches[0].clientX;
+      if (!isSwipeBlocked) {
+        touchEndX = e.touches[0].clientX;
+        touchEndY = e.touches[0].clientY;
+      }
     };
+
     const handleTouchEnd = () => {
-      const delta = touchEndX - touchStartX;
-      if (Math.abs(delta) > 60) {
-        if (delta < 0) {
+      if (isSwipeBlocked) {
+        isSwipeBlocked = false;
+        return;
+      }
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      // Свайп должен быть достаточно длинным (>80px) и преимущественно горизонтальным
+      const isHorizontalSwipe = Math.abs(deltaX) > 80 && Math.abs(deltaX) > Math.abs(deltaY) * 2;
+
+      if (isHorizontalSwipe) {
+        if (deltaX < 0) {
           // свайп влево
           if (currentPage === 'calculator') setCurrentPage('history');
           else if (currentPage === 'history') setCurrentPage('statistics');
@@ -122,9 +159,11 @@ function App() {
         }
       }
     };
-    document.addEventListener('touchstart', handleTouchStart);
-    document.addEventListener('touchmove', handleTouchMove);
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
     document.addEventListener('touchend', handleTouchEnd);
+
     return () => {
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchmove', handleTouchMove);

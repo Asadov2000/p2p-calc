@@ -243,6 +243,16 @@ body {
 input, textarea, [contenteditable] {
   -webkit-user-select: text;
   user-select: text;
+  touch-action: manipulation;
+}
+
+/* Prevent swipe on interactive elements */
+.no-swipe,
+input,
+textarea,
+select,
+button {
+  touch-action: manipulation;
 }
 
 /* ============================================
