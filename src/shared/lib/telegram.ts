@@ -1,7 +1,3 @@
-// Safe Telegram WebApp helpers — frontend only
-// Не храните токен бота в фронтенде. Для каких-либо серверных вызовов
-// используйте backend и храните токен в переменных окружения.
-
 type WebAppType = {
   isExpanded?: boolean;
   ready?: () => void;
@@ -17,11 +13,7 @@ type WebAppType = {
 };
 
 const getWebApp = (): WebAppType | null => {
-  // В браузере WebApp SDK может быть подключён как window.Telegram.WebApp
-  // Или у вас есть полифилл для локальной разработки
-  // Всегда проверяем наличие и используем try/catch
   try {
-    // @ts-ignore
     const tg = (window as any).Telegram;
     if (!tg || !tg.WebApp) return null;
     return tg.WebApp as WebAppType;
@@ -32,7 +24,7 @@ const getWebApp = (): WebAppType | null => {
 
 export const safeTelegram = {
   ready: () => {
-    try { const w = getWebApp(); w?.ready?.(); } catch (e) { /* ignore */ }
+    try { const w = getWebApp(); w?.ready?.(); } catch (e) {}
   },
   expand: () => { try { const w = getWebApp(); w?.expand?.(); } catch (e) {} },
   close: () => { try { const w = getWebApp(); w?.close?.(); } catch (e) {} },

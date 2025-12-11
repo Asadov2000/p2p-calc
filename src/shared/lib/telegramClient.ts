@@ -1,6 +1,5 @@
 export function getTelegramUserId(): number | null {
   try {
-    // @ts-ignore
     const tg = (window as any).Telegram;
     if (!tg?.WebApp?.initDataUnsafe) return null;
     return tg.WebApp.initDataUnsafe.user?.id ?? null;

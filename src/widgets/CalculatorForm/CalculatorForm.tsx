@@ -15,20 +15,18 @@ import {
   CommissionSection 
 } from "./components";
 
-// Безопасные вызовы Haptic Feedback
 const safeHaptic = {
   impactOccurred: (style: 'light' | 'medium' | 'heavy' = 'medium') => {
-    try { WebApp?.HapticFeedback?.impactOccurred?.(style); } catch (e) { console.debug('Haptic not available'); }
+    try { WebApp?.HapticFeedback?.impactOccurred?.(style); } catch (e) {}
   },
   notificationOccurred: (type: 'success' | 'error' | 'warning' = 'success') => {
-    try { WebApp?.HapticFeedback?.notificationOccurred?.(type); } catch (e) { console.debug('Haptic not available'); }
+    try { WebApp?.HapticFeedback?.notificationOccurred?.(type); } catch (e) {}
   },
   selectionChanged: () => {
-    try { WebApp?.HapticFeedback?.selectionChanged?.(); } catch (e) { console.debug('Haptic not available'); }
+    try { WebApp?.HapticFeedback?.selectionChanged?.(); } catch (e) {}
   }
 };
 
-// Безопасный WebApp
 const safeWebApp = {
   showAlert: (text: string) => {
     try { WebApp?.showAlert?.(text); } catch (e) { alert(text); }
@@ -119,8 +117,6 @@ export const CalculatorForm = memo(() => {
       pdf.save('p2p-calc.pdf');
       safeHaptic.notificationOccurred('success');
     } catch (e) {
-      console.debug('PDF export failed, falling back to print', e);
-      // fallback: открыть окно с html и вызвать печать
       const html = `
         <html>
           <head>
@@ -148,7 +144,7 @@ export const CalculatorForm = memo(() => {
       w.document.write(html);
       w.document.close();
       w.focus();
-      setTimeout(() => { try { w.print(); } catch (e) { console.debug('Print not available', e); } }, 300);
+      setTimeout(() => { try { w.print(); } catch (e) {} }, 300);
     }
   }, [fiat, crypto, breakEven, estimatedProfit, commissionPercent, commissionAmount, netAfterCommission]);
 

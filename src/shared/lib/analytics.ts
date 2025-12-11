@@ -13,7 +13,6 @@ const read = (): EventRecord[] => {
     if (!raw) return [];
     return JSON.parse(raw);
   } catch (e) {
-    console.debug('analytics: read error', e);
     return [];
   }
 };
@@ -21,21 +20,16 @@ const read = (): EventRecord[] => {
 const write = (list: EventRecord[]) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch (e) {
-    console.debug('analytics: write error', e);
-  }
+  } catch (e) {}
 };
 
-// Umami tracking helper (window.umami доступна если скрипт загружен)
 const trackUmami = (eventName: string, eventData?: Record<string, any>) => {
   try {
     const umami = (window as any).umami;
     if (umami?.track) {
       umami.track(eventName, eventData);
     }
-  } catch (e) {
-    console.debug('umami track error', e);
-  }
+  } catch (e) {}
 };
 
 export const analytics = {
@@ -43,29 +37,22 @@ export const analytics = {
     const rec: EventRecord = { id: cryptoRandomId(), type, payload, ts: Date.now() };
     const list = read();
     list.push(rec);
-    // keep recent 500 events to avoid unbounded growth
     if (list.length > 500) list.splice(0, list.length - 500);
     write(list);
-    // also log to console for dev
-    try { console.debug('analytics.track', rec); } catch (e) {}
-    
-    // Отправляем в Umami (если настроен)
     trackUmami(type, payload);
     
-    // Если настроен Sentry DSN, добавим breadcrumb (лениво импортируем Sentry)
     try {
       const dsn = (import.meta as any).env?.VITE_SENTRY_DSN;
       if (dsn) {
         import('@sentry/react').then(Sentry => {
           try {
             Sentry.addBreadcrumb?.({ category: 'analytics', message: type, data: payload });
-          } catch (e) { console.debug('sentry breadcrumb error', e); }
+          } catch (e) {}
         }).catch(() => {});
       }
-    } catch (e) { /* ignore in non-browser */ }
+    } catch (e) {}
   },
   
-  // Трекинг просмотра страницы
   pageView: (page: string) => {
     trackUmami('pageview', { page });
     analytics.track('page_view', { page });
@@ -75,7 +62,6 @@ export const analytics = {
   clear: () => write([]),
   export: (): string => JSON.stringify(read(), null, 2),
   
-  // Получить статистику из локального хранилища
   getStats: () => {
     const events = read();
     const now = Date.now();

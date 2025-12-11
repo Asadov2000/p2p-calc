@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
 
@@ -19,44 +18,21 @@ export default defineConfig({
   },
 
   build: {
-    // Output directory
     outDir: 'dist',
     assetsDir: 'assets',
-
-    // Минимизация через esbuild (встроенный)
     minify: 'esbuild',
-
-    // Source maps для production debugging (опционально)
     sourcemap: false,
-
-    // Chunk splitting для оптимизации загрузки
     rollupOptions: {
       output: {
-        // Manual chunk splitting
         manualChunks: {
-          // React core
           'vendor-react': ['react', 'react-dom'],
-
-          // State management
           'vendor-zustand': ['zustand'],
-
-          // UI Libraries
           'vendor-lucide': ['lucide-react'],
-
-          // PDF/Export (heavy, load on demand)
           'vendor-export': ['jspdf', 'html2canvas'],
-
-          // UUID
           'vendor-uuid': ['uuid'],
-
-          // Telegram SDK
           'vendor-telegram': ['@twa-dev/sdk'],
-
-          // Animations
           'vendor-transitions': ['react-transition-group'],
         },
-
-        // Asset file naming
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name?.split('.') || [];
           const ext = info[info.length - 1];
@@ -68,29 +44,18 @@ export default defineConfig({
           }
           return `assets/[name]-[hash][extname]`;
         },
-
-        // Chunk file naming
         chunkFileNames: 'assets/js/[name]-[hash].js',
-
-        // Entry file naming
         entryFileNames: 'assets/js/[name]-[hash].js',
       },
     },
-
-    // Increase chunk size warning limit (KB)
     chunkSizeWarningLimit: 500,
-
-    // Target modern browsers
     target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
   },
 
-  // Оптимизации для production
   esbuild: {
-    // Remove console in production
     drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
   },
 
-  // Resolve aliases
   resolve: {
     alias: {
       '@': '/src',
@@ -102,7 +67,6 @@ export default defineConfig({
     },
   },
 
-  // CSS оптимизации
   css: {
     devSourcemap: true,
   },

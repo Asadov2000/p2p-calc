@@ -6,7 +6,7 @@ interface State {
   error?: any;
 }
 
-export class ErrorBoundary extends React.Component<{ children?: React.ReactNode }, State> {
+class ErrorBoundary extends React.Component<{ children?: React.ReactNode }, State> {
   constructor(props: {}) {
     super(props);
     this.state = { hasError: false };
@@ -19,27 +19,17 @@ export class ErrorBoundary extends React.Component<{ children?: React.ReactNode 
   componentDidCatch(error: any, info: any) {
     try {
       analytics.track('error', { message: error?.message, stack: error?.stack, info });
-      // Отправляем в Sentry (если настроен) — лениво импортируем
       try {
         const dsn = (import.meta as any).env?.VITE_SENTRY_DSN;
         if (dsn) {
           import('@sentry/react')
             .then((Sentry) => {
-              try {
-                Sentry.captureException(error);
-              } catch (e) {
-                console.debug('sentry capture error', e);
-              }
+              try { Sentry.captureException(error); } catch (e) {}
             })
             .catch(() => {});
         }
-      } catch (e) {
-        /* ignore */
-      }
-    } catch (e) {
-      console.debug('analytics error', e);
-    }
-    console.error('Unhandled error captured by ErrorBoundary', error, info);
+      } catch (e) {}
+    } catch (e) {}
   }
 
   render() {

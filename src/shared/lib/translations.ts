@@ -9,7 +9,6 @@ export const translations = {
     save: "Сохранить",
     support: "Поддержка",
     hints: "Подсказки",
-    // Новые ключи для шагов
     step1Title: "Шаг 1️⃣  Укажи сумму, которую ты потратил",
     step1Text: "В первое поле 'СУММА' введи точную сумму в рублях, которую ты потратил на покупку криптовалюты. Например: 5000 ₽",
     step2Title: "Шаг 2️⃣  Укажи, сколько USDT ты получил",
@@ -17,12 +16,9 @@ export const translations = {
     step3Title: "Шаг 3️⃣  Посчитай прибыль",
     step3Text: "Введи цену, по которой ты хочешь продать криптовалюту (Курс продажи). Мы автоматически покажем твой чистый заработок в рублях!",
     gotIt: "Понятно",
-    
     history: "История",
     historyEmpty: "История пуста",
     clear: "Очистить",
-
-    // Настройки
     settings: "Настройки",
     themeLabel: "Тема оформления",
     themeLight: "Светлая",
@@ -51,7 +47,6 @@ export const translations = {
     save: "Save",
     support: "Support",
     hints: "Hints",
-    // Новые ключи для шагов (English)
     step1Title: "Step 1️⃣  Enter the amount you spent",
     step1Text: "In the 'AMOUNT' field, enter the exact amount in RUB you spent on buying cryptocurrency. Example: 5000 RUB",
     step2Title: "Step 2️⃣  Enter how much USDT you received",
@@ -59,12 +54,9 @@ export const translations = {
     step3Title: "Step 3️⃣  Calculate your profit",
     step3Text: "Enter the price at which you want to sell the cryptocurrency (Selling Rate). We will automatically calculate your net profit in RUB!",
     gotIt: "Got it",
-
     history: "History",
     historyEmpty: "History is empty",
     clear: "Clear",
-
-    // Settings
     settings: "Settings",
     themeLabel: "Theme",
     themeLight: "Light",
@@ -103,8 +95,6 @@ export const translations = {
     history: "Таърих",
     historyEmpty: "Таърих холӣ аст",
     clear: "Тоза кардан",
-
-    // Settings
     settings: "Танзимот",
     themeLabel: "Мавзӯъ",
     themeLight: "Рӯшан",

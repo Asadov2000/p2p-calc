@@ -12,70 +12,34 @@ const CalculatorPage = lazy(() => import('../pages/calculator/CalculatorPage'));
 const HistoryPage = lazy(() => import('../pages/history/HistoryPage'));
 const StatisticsPage = lazy(() => import('../pages/statistics/StatisticsPage'));
 
-// Безопасный вызов WebApp методов (работает и вне Telegram)
 const safeWebApp = {
-  ready: () => {
-    try {
-      WebApp?.ready?.();
-    } catch (e) {
-      console.debug('WebApp.ready not available');
-    }
-  },
-  expand: () => {
-    try {
-      WebApp?.expand?.();
-    } catch (e) {
-      console.debug('WebApp.expand not available');
-    }
-  },
-  setHeaderColor: (color: string) => {
-    try {
-      // Telegram SDK принимает hex цвета или специальные значения
-      WebApp?.setHeaderColor?.(color as any);
-    } catch (e) {
-      console.debug('WebApp.setHeaderColor not available');
-    }
-  },
-  setBackgroundColor: (color: string) => {
-    try {
-      // Telegram SDK принимает hex цвета или специальные значения
-      WebApp?.setBackgroundColor?.(color as any);
-    } catch (e) {
-      console.debug('WebApp.setBackgroundColor not available');
-    }
-  },
+  ready: () => { try { WebApp?.ready?.(); } catch {} },
+  expand: () => { try { WebApp?.expand?.(); } catch {} },
+  setHeaderColor: (color: string) => { try { WebApp?.setHeaderColor?.(color as any); } catch {} },
+  setBackgroundColor: (color: string) => { try { WebApp?.setBackgroundColor?.(color as any); } catch {} },
 };
 
 function App() {
   const theme = useCalculatorStore((state) => state.theme);
-  const [currentPage, setCurrentPage] = useState<'calculator' | 'history' | 'statistics'>(
-    'calculator'
-  );
+  const [currentPage, setCurrentPage] = useState<'calculator' | 'history' | 'statistics'>('calculator');
 
   useEffect(() => {
     safeWebApp.ready();
     safeWebApp.expand();
-    // Initialize our safeTelegram wrapper as well (no-op outside Telegram)
-    try {
-      safeTelegram.ready();
-    } catch (e) {
-      /* ignore */
-    }
+    try { safeTelegram.ready(); } catch {}
 
-    // Применяем тему к HTML тегу
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      safeWebApp.setHeaderColor('#111827'); // Темный цвет хедера
+      safeWebApp.setHeaderColor('#111827');
       safeWebApp.setBackgroundColor('#111827');
     } else {
       document.documentElement.classList.remove('dark');
-      safeWebApp.setHeaderColor('#ffffff'); // Светлый цвет хедера
+      safeWebApp.setHeaderColor('#ffffff');
       safeWebApp.setBackgroundColor('#ffffff');
     }
-    // Track initial page view
+    
     analytics.track('page_view', { page: 'app-init' });
 
-    // Инициализация Sentry (лениво) если указан DSN
     try {
       const dsn = (import.meta as any).env?.VITE_SENTRY_DSN;
       if (dsn) {
@@ -88,15 +52,10 @@ function App() {
               tracesSampleRate: 0.1,
               environment: (import.meta as any).env?.MODE || 'production',
             });
-            analytics.track('sentry_init', { enabled: true });
-          } catch (e) {
-            console.debug('Sentry init failed', e);
-          }
+          } catch {}
         })();
       }
-    } catch (e) {
-      /* ignore non-browser */
-    }
+    } catch {}
   }, [theme]);
 
   useEffect(() => {
@@ -107,7 +66,6 @@ function App() {
     let isSwipeBlocked = false;
 
     const handleTouchStart = (e: TouchEvent) => {
-      // Блокируем свайп если тап начался на интерактивном элементе
       const target = e.target as HTMLElement;
       const tagName = target.tagName.toLowerCase();
       const isInteractive =
@@ -143,17 +101,13 @@ function App() {
 
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
-
-      // Свайп должен быть достаточно длинным (>80px) и преимущественно горизонтальным
       const isHorizontalSwipe = Math.abs(deltaX) > 80 && Math.abs(deltaX) > Math.abs(deltaY) * 2;
 
       if (isHorizontalSwipe) {
         if (deltaX < 0) {
-          // свайп влево
           if (currentPage === 'calculator') setCurrentPage('history');
           else if (currentPage === 'history') setCurrentPage('statistics');
         } else {
-          // свайп вправо
           if (currentPage === 'statistics') setCurrentPage('history');
           else if (currentPage === 'history') setCurrentPage('calculator');
         }
@@ -177,25 +131,16 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'history':
-        return <HistoryPage />;
-      case 'statistics':
-        return <StatisticsPage />;
-      default:
-        return <CalculatorPage />;
+      case 'history': return <HistoryPage />;
+      case 'statistics': return <StatisticsPage />;
+      default: return <CalculatorPage />;
     }
   };
 
   return (
     <Layout currentPage={currentPage} onPageChange={setCurrentPage}>
       <ErrorBoundary>
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center py-20 text-gray-400 animate-fade-in">
-              Загрузка...
-            </div>
-          }
-        >
+        <Suspense fallback={<div className="flex items-center justify-center py-20 text-gray-400 animate-fade-in">Загрузка...</div>}>
           <SwitchTransition mode="out-in">
             <CSSTransition key={currentPage} timeout={400} classNames="page-transition">
               <div>{renderPage()}</div>

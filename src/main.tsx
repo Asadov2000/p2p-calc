@@ -9,16 +9,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>,
 )
 
-// Регистрация Service Worker для офлайн поддержки
 if ('serviceWorker' in navigator && (import.meta as any).env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(
-      (registration) => {
-        console.log('SW registered:', registration);
-      },
-      (error) => {
-        console.warn('SW registration failed:', error);
-      }
-    );
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }

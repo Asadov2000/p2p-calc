@@ -1,3 +1,0 @@
-# 🚀 Quick Start (archived)
-
-(archived)
