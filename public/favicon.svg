@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007AFF"/>
+      <stop offset="100%" style="stop-color:#5856D6"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.3)"/>
+      <stop offset="50%" style="stop-color:rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  
+  <!-- Shine effect -->
+  <rect width="512" height="256" rx="108" fill="url(#shine)"/>
+  
+  <!-- Calculator icon -->
+  <g transform="translate(106, 86)" fill="white">
+    <!-- Calculator body -->
+    <rect x="0" y="0" width="300" height="340" rx="32" fill="rgba(255,255,255,0.2)"/>
+    
+    <!-- Display -->
+    <rect x="24" y="24" width="252" height="80" rx="16" fill="rgba(0,0,0,0.2)"/>
+    <text x="256" y="85" font-family="SF Pro Display, -apple-system, sans-serif" font-size="48" font-weight="700" fill="white" text-anchor="end">P2P</text>
+    
+    <!-- Buttons grid -->
+    <g transform="translate(24, 120)">
+      <!-- Row 1 -->
+      <rect x="0" y="0" width="56" height="56" rx="12" fill="rgba(255,255,255,0.3)"/>
+      <rect x="66" y="0" width="56" height="56" rx="12" fill="rgba(255,255,255,0.3)"/>
+      <rect x="132" y="0" width="56" height="56" rx="12" fill="rgba(255,255,255,0.3)"/>
+      <rect x="198" y="0" width="56" height="56" rx="12" fill="#FF9500"/>
+      
+      <!-- Row 2 -->
+      <rect x="0" y="66" width="56" height="56" rx="12" fill="rgba(255,255,255,0.9)"/>
+      <rect x="66" y="66" width="56" height="56" rx="12" fill="rgba(255,255,255,0.9)"/>
+      <rect x="132" y="66" width="56" height="56" rx="12" fill="rgba(255,255,255,0.9)"/>
+      <rect x="198" y="66" width="56" height="56" rx="12" fill="#FF9500"/>
+      
+      <!-- Row 3 -->
+      <rect x="0" y="132" width="56" height="56" rx="12" fill="rgba(255,255,255,0.9)"/>
+      <rect x="66" y="132" width="56" height="56" rx="12" fill="rgba(255,255,255,0.9)"/>
+      <rect x="132" y="132" width="56" height="56" rx="12" fill="rgba(255,255,255,0.9)"/>
+      <rect x="198" y="132" width="56" height="122" rx="12" fill="#30D158"/>
+    </g>
+  </g>
+</svg>
